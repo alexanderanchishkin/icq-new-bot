@@ -1,3 +1,5 @@
+import os
+
 from random import randrange
 
 from utilities.db_explorer import *
@@ -6,22 +8,23 @@ from bot.handler import MessageHandler, BotButtonCommandHandler
 
 import json
 
-# TOKEN = "001.3146970085.4148216257:752501352"
-TOKEN = "001.2407941028.1045918646:752505142"
+# 001.3146970085.4148216257:752501352 main token
+# command for run:
+# set BOT_TOKEN=<your_bot_token> && python app.py
+
+TOKEN = os.getenv('BOT_TOKEN')
+if TOKEN is None:
+    print('Set ENV variable BOT_TOKEN')
+    print('Use run command on Windows: set BOT_TOKEN=001.123414214 && python app.py')
+    exit(0)
 
 
 bot = Bot(token=TOKEN)
 explorer = DBExplorer()
-db = PostgresqlDatabase('dc9gn4kbsdd0mi', user='onpzldzoogstwe',
-                             password='5b444a910f1acd6eedb48fd391bcb5c891e53eba17ee1401a513aba0e783e12e',
-                             host='ec2-3-211-48-92.compute-1.amazonaws.com', port=5432)
-db.connect()
 
 commands = ["/random", "/start", "/advice", "/get_top_advices", "get_next_advice"]
 
 def message_cb(bot, event):
-
-
     if event.text=="/random":
         bot.send_text(chat_id=event.from_chat, text=str(randrange(101)))
     elif event.text=="/start":
@@ -35,10 +38,11 @@ def message_cb(bot, event):
         inline_keyboard_markup = json.dumps([[{"text": "Произвести дезинфекцию", "callbackData": "desinfect"}],[{"text": "Прочистить трубу", "callbackData": "clear"}]]))
     else:
         bot.send_text(chat_id=event.from_chat, text=event.text)
-        
+
 def query_cb(bot,event):
-    bot.answer_callback_query(query_id="desinfect",text="Ты продизенфицировал", show_alert=True)
-    print(event)
+    if event.data.callbackData == "desinfect":
+        bot.send_text(chat_id= event.from_chat, text= "Молодец")
+    # bot.answer_callback_query(query_id=event.data.queryId,text="Ты продизенфицировал", show_alert=True)
 
 bot.dispatcher.add_handler(MessageHandler(callback=message_cb))
 bot.dispatcher.add_handler(BotButtonCommandHandler(callback=query_cb))
