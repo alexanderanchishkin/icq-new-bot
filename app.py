@@ -2,11 +2,12 @@ from random import randrange
 
 from utilities.db_explorer import *
 from bot.bot import Bot
-from bot.handler import MessageHandler
+from bot.handler import MessageHandler, BotButtonCommandHandler
 
 import json
 
-TOKEN = "001.3146970085.4148216257:752501352"
+# TOKEN = "001.3146970085.4148216257:752501352"
+TOKEN = "001.2407941028.1045918646:752505142"
 
 
 bot = Bot(token=TOKEN)
@@ -20,7 +21,6 @@ commands = ["/random", "/start", "/advice", "/get_top_advices", "get_next_advice
 
 def message_cb(bot, event):
 
-    bot.answer_callback_query(query_id="desinfect",text="Ты продизенфицировал", show_alert=True)
 
     if event.text=="/random":
         bot.send_text(chat_id=event.from_chat, text=str(randrange(101)))
@@ -35,7 +35,12 @@ def message_cb(bot, event):
         inline_keyboard_markup = json.dumps([[{"text": "Произвести дезинфекцию", "callbackData": "desinfect"}],[{"text": "Прочистить трубу", "callbackData": "clear"}]]))
     else:
         bot.send_text(chat_id=event.from_chat, text=event.text)
+        
+def query_cb(bot,event):
+    bot.answer_callback_query(query_id="desinfect",text="Ты продизенфицировал", show_alert=True)
+    print(event)
 
 bot.dispatcher.add_handler(MessageHandler(callback=message_cb))
+bot.dispatcher.add_handler(BotButtonCommandHandler(callback=query_cb))
 bot.start_polling()
 bot.idle()
