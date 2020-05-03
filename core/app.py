@@ -4,8 +4,7 @@ from peewee import *
 from bot.bot import Bot
 from bot.handler import MessageHandler
 
-# TOKEN = "001.3146970085.4148216257:752501352" // main
-TOKEN = "001.2407941028.1045918646:752505142"
+TOKEN = "001.3146970085.4148216257:752501352" 
 
 
 bot = Bot(token=TOKEN)
