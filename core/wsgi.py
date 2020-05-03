@@ -9,9 +9,7 @@ https://docs.djangoproject.com/en/2.1/howto/deployment/wsgi/
 
 import os
 
-from core.app import app as application
-
-os.environ.setdefault("FLASK_APP", "core.app")
+from core.app import bot as application
 
 if __name__ == '__main__':
     application.run()

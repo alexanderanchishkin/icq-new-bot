@@ -1,12 +1,15 @@
-from flask import Flask
+from bot.bot import Bot
+from bot.handler import MessageHandler
 
-app = Flask(__name__)
+TOKEN = "001.3146970085.4148216257:752501352"
 
-
-@app.route('/')
-def hello():
-    return "<h1>Hi!</h1>"
+bot = Bot(token=TOKEN)
 
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+def message_cb(bot, event):
+    bot.send_text(chat_id=event.from_chat, text=event.text)
+
+
+bot.dispatcher.add_handler(MessageHandler(callback=message_cb))
+bot.start_polling()
+bot.idle()
