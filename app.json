@@ -1,0 +1,16 @@
+{
+  "name": "ICQ New Bot ViruStrangers",
+  "description": "Kill COVID-19",
+  "image": "heroku/python",
+  "repository": "https://github.com/heroku/python-getting-started",
+  "keywords": ["python", "flask" ],
+  "addons": [ "heroku-postgresql" ],
+  "env": {
+    "SECRET_KEY": {
+      "description": "The secret key for the Django application.",
+      "generator": "secret"
+    }
+  },
+  "environments": {
+  }
+}
