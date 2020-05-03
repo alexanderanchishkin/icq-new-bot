@@ -32,3 +32,7 @@ class DBExplorer:
     def write_user(self, args):
         self.db.connect()
         User.insert(**args).on_conflict_ignore().execute()
+
+    def get_user_ids(self):
+        self.db.connect()
+        return [user.user_id for user in User.select(User.user_id)]
