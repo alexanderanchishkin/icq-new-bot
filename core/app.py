@@ -1,4 +1,5 @@
 from random import randrange
+from peewee import *
 
 from bot.bot import Bot
 from bot.handler import MessageHandler
