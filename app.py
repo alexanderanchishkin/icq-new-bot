@@ -1,6 +1,6 @@
 from random import randrange
 
-from core.utilities.db_explorer import *
+from utilities.db_explorer import *
 from bot.bot import Bot
 from bot.handler import MessageHandler
 
