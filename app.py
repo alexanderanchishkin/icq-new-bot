@@ -25,6 +25,11 @@ explorer = DBExplorer()
 
 commands = ["/random", "/start", "/advice", "/get_top_advices", "get_next_advice"]
 
+def send_alerts(users, text):
+    pri
+    for user in users:
+        bot.send_text(chat_id=user, text=text)
+
 def message_cb(bot, event):
     if event.text=="/random":
         bot.send_text(chat_id=event.from_chat, text=str(randrange(101)))
@@ -40,7 +45,9 @@ def message_cb(bot, event):
             traceback.print_exc()
             print('mes')
     elif event.text == "/create_COVID":
-        return
+        users = explorer.get_user_ids()
+        text = "На карте Черноруссии появился новый вирус! \nУ него зафиксировано 50000000 HP. Поспеши уничтожить его! \n\n >> /time_to_kill <<"
+        send_alerts(users, text)
     elif event.text == "/time_to_kill":
         bot.send_text(chat_id=event.from_chat,
                       text="Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nСейчас у него 50000000 HP!\n",
@@ -53,6 +60,7 @@ def message_cb(bot, event):
 def query_cb(bot,event):
     answer = {'desinfect': "Ты продезинфицировал"}
     bot.answer_callback_query(query_id=event.data['queryId'],text=answer[event.data['callbackData']], show_alert=True)
+
 
 bot.dispatcher.add_handler(MessageHandler(callback=message_cb))
 bot.dispatcher.add_handler(BotButtonCommandHandler(callback=query_cb))
