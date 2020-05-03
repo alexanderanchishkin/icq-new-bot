@@ -13,4 +13,5 @@ from core.app import app
 
 os.environ.setdefault("FLASK_APP", "core.app")
 
-app.run()
+if __name__ == '__main__':
+    app.run()
