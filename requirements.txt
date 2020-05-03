@@ -2,3 +2,4 @@ gunicorn
 flask
 flask-heroku
 mailru-im-bot
+peewee
