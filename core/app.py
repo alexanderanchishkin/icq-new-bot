@@ -4,7 +4,7 @@ from core.utilities.db_explorer import *
 from bot.bot import Bot
 from bot.handler import MessageHandler
 
-TOKEN = "001.2055890508.3931436054:752448377"
+TOKEN = "001.3146970085.4148216257:752501352"
 
 
 bot = Bot(token=TOKEN)
