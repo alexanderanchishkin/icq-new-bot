@@ -4,8 +4,8 @@ from peewee import *
 from bot.bot import Bot
 from bot.handler import MessageHandler
 
-TOKEN = "001.3146970085.4148216257:752501352"
-# TOKEN = "001.2407941028.1045918646:752505142" мой токен
+# TOKEN = "001.3146970085.4148216257:752501352" // main
+TOKEN = "001.2407941028.1045918646:752505142"
 
 
 bot = Bot(token=TOKEN)
@@ -38,13 +38,13 @@ def message_cb(bot, event):
 
 def setState(chat_id, state):
     row = State(
-        chat_id = chat_id,
+        user_id = chat_id,
         state = state
     )
     row.save()
 
 def getState(chat_id):
-    return State.get(State.chat_id == chat_id)
+    return State.get(State.user_id == chat_id)
 
 bot.dispatcher.add_handler(MessageHandler(callback=message_cb))
 bot.start_polling()
