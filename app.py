@@ -29,7 +29,14 @@ commands = ["/random", "/start", "/advice", "/get_top_advices", "get_next_advice
 def send_alerts(users, text):
     for user in users:
         bot.send_text(chat_id=user, text=text)
-
+def updateMessage(bot, chat_id, msg_id):
+    damage = randrange(101)
+    currHP = explorer.attack_monster(damage=damage)
+    bot.edit_text(chat_id=chat_id, msg_id=msg_id, 
+    text="Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nТы нанёс {0} урона!\nСейчас у него {1} HP!\n".format(damage,currHP),
+    inline_keyboard_markup=json.dumps(
+                          [[{"text": "Произвести дезинфекцию", "callbackData": "desinfect"}],
+                           [{"text": "Прочистить трубу", "callbackData": "clear"}]]))
 def message_cb(bot, event):
     if event.text=="/random":
         bot.send_text(chat_id=event.from_chat, text=str(randrange(101)))
@@ -47,20 +54,24 @@ def message_cb(bot, event):
     elif event.text == "/create_COVID":
         users = explorer.get_user_ids()
         explorer.create_monster({"hp":50000000, "endbattle": int(time.time())+12*60*60})
-        text = "На карте Черноруссии появился новый вирус! \nУ него зафиксировано 50000000 HP. Поспеши уничтожить его! \n\n >> /time_to_kill <<"
+        text = "На карте Черноруссии появился новый вирус! \nУ него зафиксировано {0} HP. Поспеши уничтожить его! \n\n >> /time_to_kill <<".format(explorer.attack_monster(damage=0))
         send_alerts(users, text)
     elif event.text == "/time_to_kill":
-        bot.send_text(chat_id=event.from_chat,
-                      text="Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nСейчас у него 50000000 HP!\n",
+        response = bot.send_text(chat_id=event.from_chat,
+                      text="Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nСейчас у него {0} HP!\n".format(explorer.attack_monster(damage=0)),
                       inline_keyboard_markup=json.dumps(
                           [[{"text": "Произвести дезинфекцию", "callbackData": "desinfect"}],
                            [{"text": "Прочистить трубу", "callbackData": "clear"}]]))
+        json_response = response.json()
+        explorer.set_kill_id(user_id= event.from_chat, kill_id=json_response['msgId'])
     else:
         bot.send_text(chat_id=event.from_chat, text=event.text)
 
 def query_cb(bot,event):
     answer = {'desinfect': "Ты продезинфицировал"}
-    bot.answer_callback_query(query_id=event.data['queryId'],text=answer[event.data['callbackData']], show_alert=True)
+    msg_id = explorer.get_kill_id(user_id= event.data['from']['userId'])
+    updateMessage(bot,event.data['message']['chat']['chatId'],msg_id )
+    bot.answer_callback_query(query_id=event.data['queryId'],text=answer[event.data['callbackData']])
 
 
 bot.dispatcher.add_handler(MessageHandler(callback=message_cb))
