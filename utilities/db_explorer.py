@@ -44,3 +44,6 @@ class DBExplorer:
         self.db.connect()
         states = State.update(**args).where(State.user_id == search_id)
         states.execute()
+
+    def get_states(self, chat_id):
+        return State.get(Select.user_id == chat_id)
