@@ -1,4 +1,5 @@
 import os
+import time
 
 from random import randrange
 
@@ -26,7 +27,6 @@ explorer = DBExplorer()
 commands = ["/random", "/start", "/advice", "/get_top_advices", "get_next_advice"]
 
 def send_alerts(users, text):
-    pri
     for user in users:
         bot.send_text(chat_id=user, text=text)
 
@@ -46,6 +46,7 @@ def message_cb(bot, event):
             print('mes')
     elif event.text == "/create_COVID":
         users = explorer.get_user_ids()
+        explorer.create_monster({"hp":50000000, "time": int(time.time()), "endbattle": int(time.time())+12*60*60})
         text = "На карте Черноруссии появился новый вирус! \nУ него зафиксировано 50000000 HP. Поспеши уничтожить его! \n\n >> /time_to_kill <<"
         send_alerts(users, text)
     elif event.text == "/time_to_kill":
