@@ -42,11 +42,11 @@ class DBExplorer:
         Monster.insert(**args).execute()
 
     def attack_monster(self, damage):
-        monster = Monster.get(Monster.hp > 0)
+        monster = Monster.get(Monster.hp != None)
         monster.hp-=damage
         rem_hp = monster.hp
         monster.save()
         return rem_hp
 
     def kill_monster(self):
-        Monster.get(Monster.hp > 0).delete_instance()
+        Monster.get(Monster.hp != None).delete_instance()
