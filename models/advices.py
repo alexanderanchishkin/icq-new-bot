@@ -13,7 +13,6 @@ class Advices(BaseModel):
     advice = TextField(default='')
     user_id = ForeignKeyField(Users, backref="advices")
 
-
     class Meta:
         db_table = "advices"
 
