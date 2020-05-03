@@ -50,3 +50,12 @@ class DBExplorer:
 
     def kill_monster(self):
         Monster.get(Monster.hp != None).delete_instance()
+
+    def get_kill_id(self, user_id):
+        user = User.get(User.user_id==user_id)
+        return user.kill_message_id
+
+    def set_kill_id(self, user_id, kill_id):
+        user = User.get(User.user_id==user_id)
+        user.kill_message_id = kill_id
+        user.save()
