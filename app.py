@@ -31,8 +31,8 @@ def message_cb(bot, event):
     elif event.text=="/start":
         bot.send_text(chat_id=event.from_chat, text="Registration in process")
         try:
-            explorer.write_user({'username':event.data['from'].get(['nick'], ''),
-                                'name': event.data['from'].get(['firstName'], '')+' '+event.data['from'].get(['lastName'], ''),
+            explorer.write_user({'username':event.data['from'].get('nick', ''),
+                                'name': event.data['from'].get('firstName', '')+' '+event.data['from'].get('lastName', ''),
                                 'user_id': event.data['from']['userId']})
         except:
             print('ОШИБКА!')
