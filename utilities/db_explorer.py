@@ -2,6 +2,7 @@ from peewee import *
 from modules.clicker import Clicker
 from modules.answer import Answer
 from modules.useranswer import UserAnswer
+from modules.user import User
 
 class DBExplorer:
     def __enter__(self):
@@ -26,6 +27,10 @@ class DBExplorer:
     def write_useranswer(self, args):
         self.db.connect()
         UserAnswer.insert(**args).execute()
+
+    def write_user(self, args):
+        self.db.connect()
+        User.insert(**args).execute()
 
 
 
