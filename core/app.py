@@ -25,11 +25,9 @@ def message_cb(bot, event):
             event.data['from']['lastName'],
             event.data)
         bot.send_text(chat_id=event.from_chat, text=start_message)
-    elif event.text == "/advice":
-        bot.send_text(chat_id=event.from_chat, text="Напиши свой совет для других")
-        explorer.write_states({"user_id": event.from_chat, "state": "advice"})
-    elif event.text == "/getTopAdvice":
-        bot.send_text(chat_id=event.from_chat, text="ТОП-5 СОВЕТОВ ПОЛЬЗОВАТЕЛЕЙ\n\n1. Кушац\n2. Не пить\n3. Спать\n4. Работать\n5. Кушац")
+    elif event.text == "/time_to_kill":
+        bot.send_text(chat_id=event.from_chat, text="Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nСейчас у него 50000000 HP!\n",
+        inlineKeyboardMarkup = [[{text: "Произвести дезинфекцию", callbackData: "desinfect"}, {text: "Прочистить трубу", callbackData: "clear"}]])
     else:
         if(explorer.get_states(event.from_chat) == "advice"):
             bot.send_text(chat_id=event.from_chat, text="Спасибо за твой совет :)\nЯ его записал")
