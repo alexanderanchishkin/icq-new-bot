@@ -1,6 +1,7 @@
 from peewee import *
 import datetime
 from modules.answer import Answer
+from modules.user import User
 
 class BaseModel(Model):
     class Meta:
@@ -10,8 +11,8 @@ class BaseModel(Model):
 
 class UserAnswer(BaseModel):
     id = PrimaryKeyField()
-    user_id = CharField(max_length=250, default='')
-    answer_id = ForeignKeyField(Answer, backref='users')
+    user_id = ForeignKeyField(User, backref='useranswers')
+    answer_id = ForeignKeyField(Answer, backref='useranswers')
     created_at = DateTimeField(default=datetime.datetime.now())
 
     class Meta:
