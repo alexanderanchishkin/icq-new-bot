@@ -1,3 +1,5 @@
+import os
+
 from random import randrange
 
 from utilities.db_explorer import *
@@ -6,7 +8,15 @@ from bot.handler import MessageHandler
 
 import json
 
-TOKEN = "001.3146970085.4148216257:752501352"
+# 001.3146970085.4148216257:752501352 main token
+# command for run:
+# set BOT_TOKEN=<your_bot_token> && python app.py
+
+TOKEN = os.getenv('BOT_TOKEN')
+if TOKEN is None:
+    print('Set ENV variable BOT_TOKEN')
+    print('Use run command on Windows: set BOT_TOKEN=001.123414214 && python app.py')
+    exit(0)
 
 
 bot = Bot(token=TOKEN)
