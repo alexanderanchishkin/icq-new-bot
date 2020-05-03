@@ -4,6 +4,7 @@ from modules.answer import Answer
 from modules.useranswer import UserAnswer
 from modules.user import User
 
+
 class DBExplorer:
     def __enter__(self):
         return self
@@ -30,7 +31,4 @@ class DBExplorer:
 
     def write_user(self, args):
         self.db.connect()
-        User.insert(**args).execute()
-
-
-
+        User.create(**args).execute()
