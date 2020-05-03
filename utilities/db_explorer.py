@@ -31,4 +31,4 @@ class DBExplorer:
 
     def write_user(self, args):
         self.db.connect()
-        User.create(**args).execute()
+        User.insert(**args).execute()
