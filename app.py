@@ -4,8 +4,10 @@ from utilities.db_explorer import *
 from bot.bot import Bot
 from bot.handler import MessageHandler
 
+from urllib.parse import urlencode, quote_plus
 
-TOKEN = "001.3146970085.4148216257:752501352"
+# TOKEN = "001.3146970085.4148216257:752501352"
+TOKEN = "001.2407941028.1045918646:752505142"
 
 
 bot = Bot(token=TOKEN)
@@ -18,6 +20,9 @@ db.connect()
 commands = ["/random", "/start", "/advice", "/get_top_advices", "get_next_advice"]
 
 def message_cb(bot, event):
+
+    bot.answer_callback_query(query_id="desinfect",text="Ты продизенфицировал", show_alert=True)
+
     if event.text=="/random":
         bot.send_text(chat_id=event.from_chat, text=str(randrange(101)))
     elif event.text=="/start":
@@ -27,13 +32,9 @@ def message_cb(bot, event):
             event.data)
         bot.send_text(chat_id=event.from_chat, text=start_message)
     elif event.text == "/time_to_kill":
-        bot.send_text(chat_id=event.from_chat, text="Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nСейчас у него 50000000 HP!\n",
-        inline_keyboard_markup = [[{text: "Произвести дезинфекцию", callbackData: "desinfect"}, {text: "Прочистить трубу", callbackData: "clear"}]])
+        keyboard = urlencode([[{"text": "Произвести дезинфекцию", "callbackData": "desinfect"}, {"text": "Прочистить трубу", "callbackData": "clear"}]],quote_via=quote_plus)
+        bot.send_text(chat_id=event.from_chat, text="Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nСейчас у него 50000000 HP!\n", inline_keyboard_markup = keyboard)
     else:
-        if(explorer.get_states(event.from_chat) == "advice"):
-            bot.send_text(chat_id=event.from_chat, text="Спасибо за твой совет :)\nЯ его записал")
-            explorer.update_states({"user_id": event.from_chat, "state": ""})
-            # запись совета в бд
         bot.send_text(chat_id=event.from_chat, text=event.text)
 
 bot.dispatcher.add_handler(MessageHandler(callback=message_cb))
