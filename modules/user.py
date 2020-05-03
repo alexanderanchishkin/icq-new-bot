@@ -11,6 +11,7 @@ class User(BaseModel):
     username= CharField(max_length=250, default='', unique=True)
     name = CharField(max_length=250, default='')
     user_id = CharField(max_length=250, default='', unique=True)
+    kill_message_id = CharField(max_length=250, default='')
 
     class Meta:
         db_table = "user"
