@@ -8,13 +8,13 @@ class BaseModel(Model):
                                 password='5b444a910f1acd6eedb48fd391bcb5c891e53eba17ee1401a513aba0e783e12e',
                                 host='ec2-3-211-48-92.compute-1.amazonaws.com', port=5432)
 
-class Advices(BaseModel):
+class State(BaseModel):
     id = PrimaryKeyField(null=False)
-    advice = TextField(default='')
+    state = CharField(max_length=250, default='')
     user_id = ForeignKeyField(Users, backref="advices")
 
     class Meta:
-        db_table = "advices"
+        db_table = "states"
 
 
 #if __name__ == '__main__':
