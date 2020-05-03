@@ -46,4 +46,4 @@ class DBExplorer:
         states.execute()
 
     def get_states(self, chat_id):
-        return State.get(Select.user_id == chat_id)
+        return State.get(State.user_id == chat_id)
