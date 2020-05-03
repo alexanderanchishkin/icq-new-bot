@@ -1,7 +1,7 @@
 from random import randrange
 from peewee import *
 
-from utilities.db_explorer import *
+from db_explorer import *
 from bot.bot import Bot
 from bot.handler import MessageHandler
 
@@ -15,6 +15,7 @@ db = PostgresqlDatabase('dc9gn4kbsdd0mi', user='onpzldzoogstwe',
                              host='ec2-3-211-48-92.compute-1.amazonaws.com', port=5432)
 db.connect()
 
+commands = ["/random", "/start", "/advice", "/getTopAdvice"]
 
 def message_cb(bot, event):
     if event.text=="/random":
@@ -32,6 +33,8 @@ def message_cb(bot, event):
         bot.send_text(chat_id=event.from_chat, text="ТОП-5 СОВЕТОВ ПОЛЬЗОВАТЕЛЕЙ\n\n1. Кушац\n2. Не пить\n3. Спать\n4. Работать\n5. Кушац")
     else:
         if(explorer.get_states(event.from_chat) == "advice"):
+            if(event.text in commands):
+                return bot.send_text(chat_id=event.from_chat, text="Ты не можешь сейчас использовать команды.\nНапиши мне свой совет :)")
             bot.send_text(chat_id=event.from_chat, text="Спасибо за твой совет :)\nЯ его записал")
             explorer.update_states({"user_id": event.from_chat, "state": ""})
             # запись совета в бд
