@@ -40,9 +40,8 @@ def message_cb(bot, event):
         bot.send_text(chat_id=event.from_chat, text=event.text)
 
 def query_cb(bot,event):
-    if event.data.callbackData == "desinfect":
-        bot.send_text(chat_id= event.from_chat, text= "Молодец")
-    # bot.answer_callback_query(query_id=event.data.queryId,text="Ты продизенфицировал", show_alert=True)
+    answer = {'desinfect': "Ты продезинфицировал"}
+    bot.answer_callback_query(query_id=event.data['queryId'],text=answer[event.data['callbackData']], show_alert=True)
 
 bot.dispatcher.add_handler(MessageHandler(callback=message_cb))
 bot.dispatcher.add_handler(BotButtonCommandHandler(callback=query_cb))
