@@ -4,6 +4,7 @@ from utilities.db_explorer import *
 from bot.bot import Bot
 from bot.handler import MessageHandler
 
+
 TOKEN = "001.3146970085.4148216257:752501352"
 
 
@@ -14,7 +15,7 @@ db = PostgresqlDatabase('dc9gn4kbsdd0mi', user='onpzldzoogstwe',
                              host='ec2-3-211-48-92.compute-1.amazonaws.com', port=5432)
 db.connect()
 
-commands = ["/random", "/start", "/advice", "/getTopAdvice"]
+commands = ["/random", "/start", "/advice", "/get_top_advices", "get_next_advice"]
 
 def message_cb(bot, event):
     if event.text=="/random":
@@ -25,10 +26,10 @@ def message_cb(bot, event):
             event.data['from']['lastName'],
             event.data)
         bot.send_text(chat_id=event.from_chat, text=start_message)
-    elif event.text == "/advice":
+    elif event.text == "/make_advice":
         bot.send_text(chat_id=event.from_chat, text="Напиши свой совет для других")
         explorer.write_states({"user_id": event.from_chat, "state": "advice"})
-    elif event.text == "/getTopAdvice":
+    elif event.text == "/get_top_advices":
         bot.send_text(chat_id=event.from_chat, text="ТОП-5 СОВЕТОВ ПОЛЬЗОВАТЕЛЕЙ\n\n1. Кушац\n2. Не пить\n3. Спать\n4. Работать\n5. Кушац")
     else:
         if(explorer.get_states(event.from_chat) == "advice"):
