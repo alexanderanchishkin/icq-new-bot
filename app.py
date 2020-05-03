@@ -41,6 +41,9 @@ def message_cb(bot, event):
                                 'name': event.data['from']['firstName']+' '+event.data['from']['lastName'],
                                 'user_id': event.data['from']['userId']})
         except:
+            print('ОШИБКА!')
+            import traceback
+            traceback.print_exc()
             print('mes')
     elif event.text == "/time_to_kill":
         bot.send_text(chat_id=event.from_chat,
