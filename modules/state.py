@@ -1,5 +1,5 @@
 from peewee import *
-from core.modules.users import Users
+from modules.users import Users
 
 class BaseModel(Model):
 

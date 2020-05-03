@@ -1,10 +1,11 @@
 from random import randrange
 
-from core.utilities.db_explorer import *
+from utilities.db_explorer import *
 from bot.bot import Bot
 from bot.handler import MessageHandler
 
-TOKEN = "001.2055890508.3931436054:752448377"
+
+TOKEN = "001.3146970085.4148216257:752501352"
 
 
 bot = Bot(token=TOKEN)
@@ -14,7 +15,7 @@ db = PostgresqlDatabase('dc9gn4kbsdd0mi', user='onpzldzoogstwe',
                              host='ec2-3-211-48-92.compute-1.amazonaws.com', port=5432)
 db.connect()
 
-commands = ["/random", "/start", "/advice", "/getTopAdvice"]
+commands = ["/random", "/start", "/advice", "/get_top_advices", "get_next_advice"]
 
 def message_cb(bot, event):
     if event.text=="/random":
