@@ -22,4 +22,4 @@ if __name__ == '__main__':
                              password='5b444a910f1acd6eedb48fd391bcb5c891e53eba17ee1401a513aba0e783e12e',
                              host='ec2-3-211-48-92.compute-1.amazonaws.com', port=5432)
     db.connect()
-    Clicker.create_table(safe=True)
+    db.create_tables([Clicker])
