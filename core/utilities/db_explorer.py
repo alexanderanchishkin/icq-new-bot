@@ -1,7 +1,7 @@
 from peewee import *
-from users import Users
-from state import State
-from advices import Advices
+from core.modules.users import Users
+from core.modules.state import State
+from core.modules.advices import Advices
 
 class DBExplorer:
     def __enter__(self):
