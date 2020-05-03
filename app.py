@@ -39,6 +39,8 @@ def message_cb(bot, event):
             import traceback
             traceback.print_exc()
             print('mes')
+    elif event.text == "/create_COVID":
+        return
     elif event.text == "/time_to_kill":
         bot.send_text(chat_id=event.from_chat,
                       text="Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nСейчас у него 50000000 HP!\n",
