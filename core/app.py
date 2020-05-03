@@ -27,13 +27,13 @@ def message_cb(bot, event):
         bot.send_text(chat_id=event.from_chat, text=start_message)
     elif event.text == "/advice":
         bot.send_text(chat_id=event.from_chat, text="Напиши свой совет для других")
-        explorer.write_states(user_id=event.from_chat, state="advice")
+        explorer.write_states({"user_id": event.from_chat, "state": "advice"})
     elif event.text == "/getTopAdvice":
         bot.send_text(chat_id=event.from_chat, text="ТОП-5 СОВЕТОВ ПОЛЬЗОВАТЕЛЕЙ\n\n1. Кушац\n2. Не пить\n3. Спать\n4. Работать\n5. Кушац")
     else:
         if(explorer.get_states(event.from_chat) == "advice"):
             bot.send_text(chat_id=event.from_chat, text="Спасибо за твой совет :)\nЯ его записал")
-            explorer.update_states(user_id=event.from_chat, state="")
+            explorer.update_states({"user_id": event.from_chat, "state": ""})
             # запись совета в бд
         bot.send_text(chat_id=event.from_chat, text=event.text)
 
