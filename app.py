@@ -51,18 +51,17 @@ def updateMessage(bot, chat_id, msg_id, callbackData):
         text=text,
         inline_keyboard_markup=json.dumps(
                           [actions[randrange(7)], actions[randrange(7)]]))
-
 def message_cb(bot, event):
     if event.text=="/random":
         bot.send_text(chat_id=event.from_chat, text=str(randrange(101)))
     elif event.text=="/start":
         bot.send_text(chat_id=event.from_chat, text="Будьте готовы сражаться! Вирус на подходе!")
-        explorer.write_chats({'chat_id':event.data['chat']['chatId']})
+        explorer.write_chats({'chat_id': event.data['chat']['chatId']})
     elif event.text == "/create_COVID":
-        chats = explorer.get_chats_ids()
+        users = explorer.get_chats_ids()
         explorer.create_monster({"hp":50000000, "endbattle": int(time.time())+12*60*60})
         text = "На карте Лимпопо появился новый вирус! \nУ него зафиксировано {0} HP. Поспеши уничтожить его! \n\n >> /time_to_kill <<".format(explorer.attack_monster(damage=0, chat_id=event.from_chat))
-        send_alerts(chats, text)
+        send_alerts(users, text)
     elif event.text == "/time_to_kill":
         kill_id = explorer.get_kill_id(chat_id=event.from_chat)
         if(kill_id[0]):
@@ -82,7 +81,7 @@ def query_cb(bot,event):
         msg_id = kill_msg[0]
         updateMessage(bot,event.data['message']['chat']['chatId'],msg_id, event.data['callbackData'])
         bot.answer_callback_query(query_id=event.data['queryId'],text=answer[event.data['callbackData']])
-    else: 
+    else:
         bot.delete_messages(chat_id=event.data['message']['chat']['chatId'], msg_id=kill_msg[0])
         bot.send_text(chat_id=event.from_chat,
                       text="Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nСейчас у него {0} HP!\n".format(explorer.attack_monster(damage=0, chat_id=event.data['message']['chat']['chatId'])),
