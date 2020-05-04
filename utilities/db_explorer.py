@@ -1,12 +1,8 @@
 from peewee import *
 import time
 
-from modules.clicker import Clicker
-from modules.answer import Answer
-from modules.useranswer import UserAnswer
-from modules.user import User
 from modules.monster import Monster
-
+from modules.chats import Chats
 
 class DBExplorer:
     def __enter__(self):
@@ -21,20 +17,11 @@ class DBExplorer:
                                 host='ec2-3-211-48-92.compute-1.amazonaws.com', port=5432)
         self.db.connect()
 
-    def write_clicker(self, args):
-        Clicker.insert(**args).execute()
+    def write_chats(self, args):
+        Chats.insert(**args).on_conflict_ignore().execute()
 
-    def write_answer(self, args):
-        Answer.insert(**args).execute()
-
-    def write_useranswer(self, args):
-        UserAnswer.insert(**args).execute()
-
-    def write_user(self, args):
-        User.insert(**args).on_conflict_ignore().execute()
-
-    def get_user_ids(self):
-        return [user.user_id for user in User.select(User.user_id)]
+    def get_chats_ids(self):
+        return [chat.chat_id for chat in Chats.select(Chats.chat_id)]
 
     def create_monster(self, args):
         try:
@@ -43,29 +30,28 @@ class DBExplorer:
             pass
         Monster.insert(**args).execute()
 
-    def attack_monster(self, damage, user_id):
+    def attack_monster(self, damage, chat_id):
         monster = Monster.get(Monster.hp != None)
-        user = User.get(User.user_id == user_id)
-        user.total_dmg += damage
+        chat = Chats.get(Chats.chat_id == chat_id)
         monster.hp-=damage
         rem_hp = monster.hp
         monster.save()
-        user.save()
+        chat.save()
         return rem_hp
 
     def kill_monster(self):
         Monster.get(Monster.hp != None).delete_instance()
 
-    def get_kill_id(self, user_id):
-        user = User.get(User.user_id==user_id)
-        return user.kill_message_id, user.time_kill_message
+    def get_kill_id(self, chat_id):
+        chat = Chats.get(Chats.chat_id==chat_id)
+        return chat.kill_message_id, chat.time_kill_message
 
-    def set_kill_id(self, user_id, kill_id, time_kill=time.time()):
-        user = User.get(User.user_id==user_id)
-        user.kill_message_id = kill_id
-        user.time_kill_message = time_kill
-        user.save()
+    def set_kill_id(self, chat_id, kill_id, time_kill=time.time()):
+        chat = Chats.get(Chats.chat_id==chat_id)
+        chat.kill_message_id = kill_id
+        chat.time_kill_message = time_kill
+        chat.save()
 
-    def get_lvl(self, user_id):
-        user = User.get(User.user_id==user_id)
-        return {'lvl': user.lvl, 'total_dmg': user.total_dmg}
+    def get_lvl(self, chat_id):
+        chat = Chats.get(Chats.chat_id==chat_id)
+        return {'lvl': chat.lvl, 'total_dmg': chat.total_dmg}
