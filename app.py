@@ -2,7 +2,7 @@ import os
 import time
 import numpy as np
 
-from random import randrange
+from random import randrange, choice
 
 from utilities import idle
 from utilities.db_explorer import *
@@ -24,18 +24,21 @@ if TOKEN is None:
 
 bot = Bot(token=TOKEN)
 explorer = DBExplorer()
-
+is_started = False
 commands = ["/random", "/start", "/advice", "/get_top_advices", "get_next_advice"]
 
-actions = [
+good_actions = [
     [{"text": "Произвести дезинфекцию", "callbackData": "desinfect"}],
     [{"text": "Проветрить комнату", "callbackData": "room"}],
     [{"text": "Выпить чай с лимоном", "callbackData": "lemon"}],
     [{"text": "Отсидеться на дома", "callbackData": "home"}],
     [{"text": "Провести влажную уборку", "callbackData": "cleaning"}],
+]
+bad_actions = [
     [{"text": "Прочистить трубу", "callbackData": "truba"}],
     [{"text": "Сделать чесночный киндер", "callbackData": "onion"}],
 ]
+actions = [good_actions, bad_actions]
 
 def send_alerts(chats, text):
     for chat in chats:
@@ -63,8 +66,7 @@ def updateMessage(bot, chat_id, msg_id, callbackData,name):
             text= "Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nТы нанёс {0} урона!\nСейчас у него {1} HP!\n".format(damage,currHP),
     bot.edit_text(chat_id=chat_id, msg_id=msg_id, 
         text=text,
-        inline_keyboard_markup=json.dumps(
-                          [actions[randrange(7)], actions[randrange(7)]]))
+        inline_keyboard_markup=json.dumps(get_rand_actions()))
 def message_cb(bot, event):
     chat_id = event.data['chat']['chatId']
     if event.text=="/random":
@@ -88,7 +90,7 @@ def message_cb(bot, event):
             bot.delete_messages(chat_id=chat_id, msg_id=kill_id[0])
         response = bot.send_text(chat_id=chat_id,
                     text="Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nСейчас у него {0} HP!\n".format(explorer.attack_monster(damage=0, chat_id=chat_id)),
-                    inline_keyboard_markup=json.dumps([actions[randrange(7)], actions[randrange(7)]]))
+                    inline_keyboard_markup=json.dumps(get_rand_actions()))
         json_response = response.json()
         explorer.set_kill_id(chat_id= chat_id, kill_id=json_response['msgId'])
 
@@ -105,9 +107,26 @@ def query_cb(bot,event):
         bot.delete_messages(chat_id=chat_id, msg_id=kill_msg[0])
         bot.send_text(chat_id=event.from_chat,
                       text="Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nСейчас у него {0} HP!\n".format(explorer.attack_monster(damage=0, chat_id=event.data['message']['chat']['chatId'])),
-                      inline_keyboard_markup=json.dumps(
-                         [actions[randrange(7)], actions[randrange(7)]]))
+                      inline_keyboard_markup=json.dumps(get_rand_actions()))
+def get_rand_actions():
+    first_index = 1
+    second_index = 1
+    first_action = []
+    second_action = []
+    while first_index == 1 and second_index == 1:
+        first_index = randrange(2)
+        second_index = randrange(2)
+    if first_index == second_index:
+        first_action = choice(actions[first_index])
+        second_action = first_action.copy()
+        while first_action[0]['text'] == second_action[0]['text']:
+            second_action = choice(actions[second_index])
+    else:
+        first_action = choice(actions[first_index])
+        second_action = choice(actions[second_index])
+    return [first_action, second_action]
 
+print(get_rand_actions())
 
 bot.dispatcher.add_handler(MessageHandler(callback=message_cb))
 bot.dispatcher.add_handler(BotButtonCommandHandler(callback=query_cb))
