@@ -50,6 +50,7 @@ class DBExplorer:
         monster.hp-=damage
         rem_hp = monster.hp
         monster.save()
+        user.save()
         return rem_hp
 
     def kill_monster(self):
