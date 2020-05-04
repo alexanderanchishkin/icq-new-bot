@@ -9,9 +9,9 @@ class BaseModel(Model):
 
 class Clicker(BaseModel):
     id = PrimaryKeyField()
-    title = CharField(max_length=250, default='')
-    text = TextField(default='')
-    name = CharField(max_length=250, default='')
+    title = CharField(max_length=250, default=lambda: '')
+    text = TextField(default=lambda: '')
+    name = CharField(max_length=250, default=lambda: '')
     created_at = DateTimeField(default=datetime.datetime.now())
 
     class Meta:

@@ -9,7 +9,7 @@ class BaseModel(Model):
 
 class Answer(BaseModel):
     id = PrimaryKeyField()
-    text = TextField(default='')
+    text = TextField(default=lambda: '')
     clicker_id = ForeignKeyField(Clicker, backref='answers')
     likes = IntegerField(default=0)
 

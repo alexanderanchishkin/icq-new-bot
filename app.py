@@ -58,8 +58,7 @@ def message_cb(bot, event):
         try:
             explorer.write_user({'username':event.data['from'].get('nick', ''),
                                 'name': event.data['from'].get('firstName', '')+' '+event.data['from'].get('lastName', ''),
-                                'user_id': event.data['from']['userId'], 'kill_message_id':'', 'time_kill_message':0,
-                                'lvl':1, 'total_dmg':100})
+                                'user_id': event.data['from']['userId']})
         except:
             print('ОШИБКА!')
             import traceback
