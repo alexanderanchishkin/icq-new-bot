@@ -12,6 +12,8 @@ from bot.handler import MessageHandler, BotButtonCommandHandler
 
 import json
 
+random.seed(time.clock())
+
 # 001.3146970085.4148216257:752501352 main token
 # (set BOT_TOKEN=001.3146970085.4148216257:752501352) && python app.py
 # command for run:
