@@ -76,7 +76,7 @@ def message_cb(bot, event):
     if event.text=="/random":
         bot.send_text(chat_id=chat_id, text=str(random.randrange(101)))
     elif event.text=="/start":
-        bot.send_text(chat_id=chat_id, text="Приветствую тебя! Пополняй ряди ")
+        bot.send_text(chat_id=chat_id, text="Здравия желаю! Нет времяни объяснять")
         explorer.write_chats({'chat_id': chat_id})
     elif event.text == "/create_COVID":
         users = explorer.get_chats_ids()
@@ -85,7 +85,6 @@ def message_cb(bot, event):
         send_alerts(users, text)
     elif event.text == "/stats":
         stat_id = explorer.get_stats_id(chat_id=chat_id)
-        print(stat_id)
         if(stat_id[0]):
             bot.delete_messages(chat_id=chat_id, msg_id=stat_id[0])
         info = explorer.get_dmg(chat_id = chat_id)
@@ -120,7 +119,8 @@ def query_cb(bot,event):
         msg_id = kill_msg[0]
         name = event.data['from']['firstName'] + ' ' + event.data['from']['lastName']
         updateMessage(bot,chat_id,msg_id, event.data['callbackData'], name)
-        bot.answer_callback_query(query_id=event.data['queryId'],text=answer[event.data['callbackData']])
+        # bot.answer_callback_query(query_id=event.data['queryId'],text=answer[event.data['callbackData']])
+        bot.answer_callback_query(query_id=event.data['queryId'])
         stat_msg = explorer.get_stats_id(chat_id)
         info = explorer.get_dmg(chat_id = chat_id)
         type_chat = "групповой" if chat_id.find("@") > 0 else "личный"
