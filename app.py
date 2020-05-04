@@ -59,6 +59,7 @@ def updateMessages(bot, chat_id, msg_id, text, markup=None):
     response = bot.edit_text(chat_id=chat_id, msg_id=msg_id,
         text=text,
         inline_keyboard_markup=markup)
+    print(response.json())
 
 def sendStats(bot, chat_id):
     stat_id = explorer.get_stats_id(chat_id=chat_id)
@@ -128,7 +129,18 @@ def query_cb(bot,event):
     if(time.time() - kill_msg[1] < 46*60*60):
         msg_id = kill_msg[0]
         name = event.data['from']['firstName'] + ' ' + event.data['from']['lastName']
-        updateMessage(bot,chat_id,msg_id, event.data['callbackData'], name)
+        # updateMessage(bot,chat_id,msg_id, event.data['callbackData'], name)
+        if event.data['callbackData'] in ["onion", "truba"]:
+            text = "Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nЭто действие не поможет против вируса!"
+        else:
+            damage = int(np.random.randn()*20 + 80)
+            currHP = explorer.attack_monster(damage=damage, chat_id=chat_id)
+            if(chat_id.find("@") != -1):
+                text = "Наш вирус обосновался в городе Усть-Камень-Кирка!\n\n{0} нанёс {1} урона!\nСейчас у него {2} HP!\n".format(name,damage,currHP)
+            else:
+                text= "Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nТы нанёс {0} урона!\nСейчас у него {1} HP!\n".format(damage,currHP)
+        markup = json.dumps(get_rand_actions())
+        updateMessages(bot, chat_id, msg_id, text, markup)
         # bot.answer_callback_query(query_id=event.data['queryId'],text=answer[event.data['callbackData']])
         stat_msg = explorer.get_stats_id(chat_id)
         info = explorer.get_dmg(chat_id = chat_id)
