@@ -82,7 +82,7 @@ def message_cb(bot, event):
         text = "На карте Лимпопо появился новый вирус! \nУ него зафиксировано {0} HP. Поспеши уничтожить его! \n\n >> /time_to_kill <<".format(explorer.attack_monster(damage=0, chat_id=chat_id))
         send_alerts(users, text)
     elif event.text == "/stats":
-        stat_id = explorer.get_kill_id(chat_id=chat_id)
+        stat_id = explorer.get_stats_id(chat_id=chat_id)
         print(stat_id)
         if(stat_id[0]):
             bot.delete_messages(chat_id=chat_id, msg_id=stat_id[0])
@@ -125,10 +125,10 @@ def query_cb(bot,event):
         exp = get_exp(info)
         text = "ИНФОРМАЦИЯ\nСтатус чата: {0}\nУровень чата: {1}\n[{5}] {2}/{3} EXP\nОбщий нанесёный урон вирусу: {4}".format(type_chat, exp['lvl'],exp['last'],exp['aim'] ,info, exp['loader'])
         if(time.time() - stat_msg[1] < 46*60*60):
-            msg_id = stat_msg[0]
-            updateMessages(bot, chat_id, msg_id, text)
+            stat_id = stat_msg[0]
+            updateMessages(bot, chat_id, stat_id, text)
         else:
-            bot.delete_messages(chat_id=chat_id, msg_id=msg_id)
+            bot.delete_messages(chat_id=chat_id, msg_id=stat_msg[0])
             bot.send_text(chat_id=event.from_chat,text=text)
     else:
         bot.delete_messages(chat_id=chat_id, msg_id=kill_msg[0])
