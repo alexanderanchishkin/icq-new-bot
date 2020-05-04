@@ -9,13 +9,13 @@ class BaseModel(Model):
 
 class User(BaseModel):
     id = PrimaryKeyField()
-    username= CharField(max_length=250, default='', unique=True)
-    name = CharField(max_length=250, default='')
-    user_id = CharField(max_length=250, default='', unique=True)
-    kill_message_id = CharField(max_length=250, default='')
-    time_kill_message = IntegerField()
+    username= CharField(max_length=250, default=lambda: '', unique=True)
+    name = CharField(max_length=250, default=lambda: '')
+    user_id = CharField(max_length=250, default=lambda: '', unique=True)
+    kill_message_id = CharField(max_length=250, default=lambda: '')
+    time_kill_message = IntegerField(default=0)
     lvl = IntegerField(default=1)
-    total_dmg = IntegerField(default=80)
+    total_dmg = IntegerField(default=100)
 
     class Meta:
         db_table = "user"
