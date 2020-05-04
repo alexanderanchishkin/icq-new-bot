@@ -56,7 +56,9 @@ def get_exp(total):
     loader = "🌚"*count+"🌝"*(10-count)
     return {"last": total, "aim": aim, "lvl": lvl, "loader":loader}
 def updateMessages(bot, chat_id, msg_id, text, markup=None):
+    print('православный маркап: ', markup)
     markup = json.dumps([[{"text": "❗ Произвести дезинфекцию ❗", "callbackData": "desinfect"}]])
+    print(markup)
     response = bot.edit_text(chat_id=chat_id, msg_id=msg_id,
         text=text,
         inline_keyboard_markup=markup)
