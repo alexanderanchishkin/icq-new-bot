@@ -2,6 +2,7 @@ import os
 import time
 import numpy as np
 
+import itertools
 import random
 
 from utilities import idle
@@ -137,7 +138,7 @@ def query_cb(bot,event):
         bot.send_text(chat_id=event.from_chat,
                       text="Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nСейчас у него {0} HP!\n".format(explorer.attack_monster(damage=0, chat_id=event.data['message']['chat']['chatId'])),
                       inline_keyboard_markup=json.dumps(get_rand_actions()))
-def get_rand_actions():
+def get_rand_actions_legacy():
     first_index = 1
     second_index = 1
     first_action = []
@@ -154,6 +155,12 @@ def get_rand_actions():
         first_action = random.choice(actions[first_index])
         second_action = random.choice(actions[second_index])
     return [first_action, second_action]
+
+
+def get_rand_actions():
+    first_action = random.choice(actions[0])
+    second_action = random.choice(actions[1])
+    return list(itertools.permutations([first_action, second_action]))
 
 
 bot.dispatcher.add_handler(MessageHandler(callback=message_cb))
