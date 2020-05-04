@@ -58,6 +58,28 @@ def updateMessages(bot, chat_id, msg_id, text, markup=None):
     response = bot.edit_text(chat_id=chat_id, msg_id=msg_id,
         text=text,
         inline_keyboard_markup=markup)
+
+def sendStats(bot, chat_id):
+    stat_id = explorer.get_stats_id(chat_id=chat_id)
+    if(stat_id[0]):
+        bot.delete_messages(chat_id=chat_id, msg_id=stat_id[0])
+    info = explorer.get_dmg(chat_id = chat_id)
+    type_chat = "групповой" if chat_id.find("@") > 0 else "личный"
+    exp = get_exp(info)
+    response = bot.send_text(chat_id=chat_id, text="ИНФОРМАЦИЯ\nСтатус чата: {0}\nУровень чата: {1}\n[{5}] {2}/{3} EXP\nОбщий нанесёный урон вирусу: {4}".format(type_chat, exp['lvl'],exp['last'],exp['aim'] ,info, exp['loader']))
+    json_response = response.json()
+    explorer.set_stats_id(chat_id=chat_id, stats_id=json_response["msgId"])
+
+def sendKillStatus(bot, chat_id):
+    kill_id = explorer.get_kill_id(chat_id=chat_id)
+    if(kill_id[0]):
+        bot.delete_messages(chat_id=chat_id, msg_id=kill_id[0])
+    response = bot.send_text(chat_id=chat_id,
+                text="Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nСейчас у него {0} HP!\n".format(explorer.attack_monster(damage=0, chat_id=chat_id)),
+                inline_keyboard_markup=json.dumps(get_rand_actions()))
+    json_response = response.json()
+    explorer.set_kill_id(chat_id= chat_id, kill_id=json_response['msgId'])
+
 def updateMessage(bot, chat_id, msg_id, callbackData,name):
     if callbackData in ["onion", "truba"]:
         text = "Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nЭто действие не поможет против вируса!"
@@ -76,32 +98,19 @@ def message_cb(bot, event):
     if event.text=="/random":
         bot.send_text(chat_id=chat_id, text=str(random.randrange(101)))
     elif event.text=="/start":
-        bot.send_text(chat_id=chat_id, text="Здравия желаю! Нет времяни объяснять")
+        bot.send_text(chat_id=chat_id, text="Здравия желаю! Нет времяни объяснять! Вступай в ряды борцов против вируса!")
         explorer.write_chats({'chat_id': chat_id})
+        sendStats(bot, chat_id)
+        sendKillStatus(bot, chat_id)
     elif event.text == "/create_COVID":
         users = explorer.get_chats_ids()
         explorer.create_monster({"hp":50000000, "endbattle": int(time.time())+12*60*60})
         text = "На карте Лимпопо появился новый вирус! \nУ него зафиксировано {0} HP. Поспеши уничтожить его! \n\n >> /time_to_kill <<".format(explorer.attack_monster(damage=0, chat_id=chat_id))
         send_alerts(users, text)
     elif event.text == "/stats":
-        stat_id = explorer.get_stats_id(chat_id=chat_id)
-        if(stat_id[0]):
-            bot.delete_messages(chat_id=chat_id, msg_id=stat_id[0])
-        info = explorer.get_dmg(chat_id = chat_id)
-        type_chat = "групповой" if chat_id.find("@") > 0 else "личный"
-        exp = get_exp(info)
-        response = bot.send_text(chat_id=chat_id, text="ИНФОРМАЦИЯ\nСтатус чата: {0}\nУровень чата: {1}\n[{5}] {2}/{3} EXP\nОбщий нанесёный урон вирусу: {4}".format(type_chat, exp['lvl'],exp['last'],exp['aim'] ,info, exp['loader']))
-        json_response = response.json()
-        explorer.set_stats_id(chat_id=chat_id, stats_id=json_response["msgId"])
+        sendStats(bot, chat_id)
     elif event.text == "/time_to_kill":
-        kill_id = explorer.get_kill_id(chat_id=chat_id)
-        if(kill_id[0]):
-            bot.delete_messages(chat_id=chat_id, msg_id=kill_id[0])
-        response = bot.send_text(chat_id=chat_id,
-                    text="Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nСейчас у него {0} HP!\n".format(explorer.attack_monster(damage=0, chat_id=chat_id)),
-                    inline_keyboard_markup=json.dumps(get_rand_actions()))
-        json_response = response.json()
-        explorer.set_kill_id(chat_id= chat_id, kill_id=json_response['msgId'])
+        sendKillStatus(bot, chat_id)
 
 def query_cb(bot,event):
     chat_id = event.data['message']['chat']['chatId']
@@ -120,7 +129,6 @@ def query_cb(bot,event):
         name = event.data['from']['firstName'] + ' ' + event.data['from']['lastName']
         updateMessage(bot,chat_id,msg_id, event.data['callbackData'], name)
         # bot.answer_callback_query(query_id=event.data['queryId'],text=answer[event.data['callbackData']])
-        bot.answer_callback_query(query_id=event.data['queryId'])
         stat_msg = explorer.get_stats_id(chat_id)
         info = explorer.get_dmg(chat_id = chat_id)
         type_chat = "групповой" if chat_id.find("@") > 0 else "личный"
