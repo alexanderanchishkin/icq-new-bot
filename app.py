@@ -69,9 +69,17 @@ def message_cb(bot, event):
 
 def query_cb(bot,event):
     answer = {'desinfect': "Ты продезинфицировал"}
-    msg_id = explorer.get_kill_id(user_id= event.data['from']['userId'])[0]
-    updateMessage(bot,event.data['message']['chat']['chatId'],msg_id )
-    bot.answer_callback_query(query_id=event.data['queryId'],text=answer[event.data['callbackData']])
+    kill_msg = explorer.get_kill_id(user_id= event.data['from']['userId'])
+    if(time.time() - kill_msg[1] < 48*60*60):
+        msg_id = kill_msg[0]
+        updateMessage(bot,event.data['message']['chat']['chatId'],msg_id)
+        bot.answer_callback_query(query_id=event.data['queryId'],text=answer[event.data['callbackData']])
+    else: 
+        bot.send_text(chat_id=event.from_chat,
+                      text="Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nСейчас у него {0} HP!\n".format(explorer.attack_monster(damage=0)),
+                      inline_keyboard_markup=json.dumps(
+                          [[{"text": "Произвести дезинфекцию", "callbackData": "desinfect"}],
+                           [{"text": "Прочистить трубу", "callbackData": "clear"}]]))
 
 
 bot.dispatcher.add_handler(MessageHandler(callback=message_cb))
