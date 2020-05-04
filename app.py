@@ -26,17 +26,30 @@ explorer = DBExplorer()
 
 commands = ["/random", "/start", "/advice", "/get_top_advices", "get_next_advice"]
 
+actions = [
+    [{"text": "Произвести дезинфекцию", "callbackData": "desinfect"}],
+    [{"text": "Проветрить комнату", "callbackData": "room"}],
+    [{"text": "Выпить чай с лимоном", "callbackData": "lemon"}],
+    [{"text": "Отсидеться на дома", "callbackData": "home"}],
+    [{"text": "Провести влажную уборку", "callbackData": "cleaning"}],
+    [{"text": "Прочистить трубу", "callbackData": "truba"}],
+    [{"text": "Сделать чесночный киндер", "callbackData": "onion"}],
+]
+
 def send_alerts(users, text):
     for user in users:
         bot.send_text(chat_id=user, text=text)
-def updateMessage(bot, chat_id, msg_id):
-    damage = randrange(101)
-    currHP = explorer.attack_monster(damage=damage, user_id=chat_id)
+def updateMessage(bot, chat_id, msg_id, callbackData):
+    if callbackData in ["onion", "truba"]:
+        text = "Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nЭто действие не поможет против вируса!"
+    else:
+        damage = randrange(101)
+        currHP = explorer.attack_monster(damage=damage, user_id=chat_id)
+        text="Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nТы нанёс {0} урона!\nСейчас у него {1} HP!\n".format(damage,currHP),
     bot.edit_text(chat_id=chat_id, msg_id=msg_id, 
-    text="Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nТы нанёс {0} урона!\nСейчас у него {1} HP!\n".format(damage,currHP),
-    inline_keyboard_markup=json.dumps(
-                          [[{"text": "Произвести дезинфекцию", "callbackData": "desinfect"}],
-                           [{"text": "Прочистить трубу", "callbackData": "clear"}]]))
+        text=text,
+        inline_keyboard_markup=json.dumps(
+                          [actions[randrange(7)], actions[randrange(7)]]))
 def message_cb(bot, event):
     if event.text=="/random":
         bot.send_text(chat_id=event.from_chat, text=str(randrange(101)))
@@ -63,9 +76,7 @@ def message_cb(bot, event):
             bot.delete_messages(chat_id=event.from_chat, msg_id=kill_id[0])
         response = bot.send_text(chat_id=event.from_chat,
                       text="Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nСейчас у него {0} HP!\n".format(explorer.attack_monster(damage=0, user_id=event.from_chat)),
-                      inline_keyboard_markup=json.dumps(
-                          [[{"text": "Произвести дезинфекцию", "callbackData": "desinfect"}],
-                           [{"text": "Прочистить трубу", "callbackData": "clear"}]]))
+                      inline_keyboard_markup=json.dumps([actions[randrange(7)], actions[randrange(7)]]))
         json_response = response.json()
         explorer.set_kill_id(user_id= event.from_chat, kill_id=json_response['msgId'])
     else:
@@ -76,14 +87,14 @@ def query_cb(bot,event):
     kill_msg = explorer.get_kill_id(user_id= event.data['from']['userId'])
     if(time.time() - kill_msg[1] < 48*60*60):
         msg_id = kill_msg[0]
-        updateMessage(bot,event.data['message']['chat']['chatId'],msg_id)
+        updateMessage(bot,event.data['message']['chat']['chatId'],msg_id, event.data['callbackData'])
         bot.answer_callback_query(query_id=event.data['queryId'],text=answer[event.data['callbackData']])
     else: 
+        bot.delete_messages(chat_id=event.data['message']['chat']['chatId'], msg_id=kill_msg[0])
         bot.send_text(chat_id=event.from_chat,
-                      text="Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nСейчас у него {0} HP!\n".format(explorer.attack_monster(damage=0, user_id=event.from_chat)),
+                      text="Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nСейчас у него {0} HP!\n".format(explorer.attack_monster(damage=0, user_id=event.data['message']['chat']['chatId'])),
                       inline_keyboard_markup=json.dumps(
-                          [[{"text": "Произвести дезинфекцию", "callbackData": "desinfect"}],
-                           [{"text": "Прочистить трубу", "callbackData": "clear"}]]))
+                         [actions[randrange(7)], actions[randrange(7)]]))
 
 
 bot.dispatcher.add_handler(MessageHandler(callback=message_cb))
