@@ -2,7 +2,7 @@ import os
 import time
 import numpy as np
 
-from random import randrange
+import random
 
 from utilities import idle
 from utilities.db_explorer import *
@@ -52,7 +52,7 @@ def get_exp(total):
     loader = "🌚"*count+"🌝"*(10-count)
     return {"last": total, "aim": aim, "lvl": lvl, "loader":loader}
 def updateMessages(bot, chat_id, msg_id, text, markup=None):
-    response = bot.edit_text(chat_id=chat_id, msg_id=msg_id, 
+    response = bot.edit_text(chat_id=chat_id, msg_id=msg_id,
         text=text,
         inline_keyboard_markup=markup)
 def updateMessage(bot, chat_id, msg_id, callbackData,name):
@@ -63,16 +63,16 @@ def updateMessage(bot, chat_id, msg_id, callbackData,name):
         currHP = explorer.attack_monster(damage=damage, chat_id=chat_id)
         if(chat_id.find("@") != -1):
             text = "Наш вирус обосновался в городе Усть-Камень-Кирка!\n\n{0} нанёс {1} урона!\nСейчас у него {2} HP!\n".format(name,damage,currHP)
-        else:    
+        else:
             text= "Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nТы нанёс {0} урона!\nСейчас у него {1} HP!\n".format(damage,currHP),
-    bot.edit_text(chat_id=chat_id, msg_id=msg_id, 
+    bot.edit_text(chat_id=chat_id, msg_id=msg_id,
         text=text,
         inline_keyboard_markup=json.dumps(
-                          [actions[randrange(7)], actions[randrange(7)]]))
+                          [actions[random.randrange(7)], actions[random.randrange(7)]]))
 def message_cb(bot, event):
     chat_id = event.data['chat']['chatId']
     if event.text=="/random":
-        bot.send_text(chat_id=chat_id, text=str(randrange(101)))
+        bot.send_text(chat_id=chat_id, text=str(random.randrange(101)))
     elif event.text=="/start":
         bot.send_text(chat_id=chat_id, text="Будьте готовы сражаться! Вирус на подходе!")
         explorer.write_chats({'chat_id': chat_id})
@@ -94,7 +94,7 @@ def message_cb(bot, event):
             bot.delete_messages(chat_id=chat_id, msg_id=kill_id[0])
         response = bot.send_text(chat_id=chat_id,
                     text="Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nСейчас у него {0} HP!\n".format(explorer.attack_monster(damage=0, chat_id=chat_id)),
-                    inline_keyboard_markup=json.dumps([actions[randrange(7)], actions[randrange(7)]]))
+                    inline_keyboard_markup=json.dumps([actions[random.randrange(7)], actions[random.randrange(7)]]))
         json_response = response.json()
         explorer.set_kill_id(chat_id= chat_id, kill_id=json_response['msgId'])
 
@@ -128,13 +128,13 @@ def query_cb(bot,event):
             bot.send_text(chat_id=event.from_chat,
                       text=text,
                       inline_keyboard_markup=json.dumps(
-                         [actions[randrange(7)], actions[randrange(7)]]))
+                         [actions[random.randrange(7)], actions[random.randrange(7)]]))
     else:
         bot.delete_messages(chat_id=chat_id, msg_id=kill_msg[0])
         bot.send_text(chat_id=event.from_chat,
                       text="Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nСейчас у него {0} HP!\n".format(explorer.attack_monster(damage=0, chat_id=event.data['message']['chat']['chatId'])),
                       inline_keyboard_markup=json.dumps(
-                         [actions[randrange(7)], actions[randrange(7)]]))
+                         [actions[random.randrange(7)], actions[random.randrange(7)]]))
 
 
 bot.dispatcher.add_handler(MessageHandler(callback=message_cb))
