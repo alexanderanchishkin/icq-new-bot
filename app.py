@@ -40,13 +40,27 @@ actions = [
 def send_alerts(chats, text):
     for chat in chats:
         bot.send_text(chat_id=chat, text=text)
-def updateMessage(bot, chat_id, msg_id, callbackData):
+def get_exp(total):
+    acc = 0
+    lvl = 1
+    aim = 80
+    while total >= aim:
+        total -= aim
+        aim += lvl*20
+        lvl += 1
+    count = int((total/aim)*10)
+    loader = "🌚"*count+"🌝"*(10-count)
+    return {"last": total, "aim": aim, "lvl": lvl, "loader":loader}
+def updateMessage(bot, chat_id, msg_id, callbackData,name):
     if callbackData in ["onion", "truba"]:
         text = "Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nЭто действие не поможет против вируса!"
     else:
         damage = int(np.random.randn()*20 + 80)
         currHP = explorer.attack_monster(damage=damage, chat_id=chat_id)
-        text="Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nТы нанёс {0} урона!\nСейчас у него {1} HP!\n".format(damage,currHP),
+        if(chat_id.find("@") != -1):
+            text = "Наш вирус обосновался в городе Усть-Камень-Кирка!\n\n{0} нанёс {1} урона!\nСейчас у него {2} HP!\n".format(name,damage,currHP)
+        else:    
+            text= "Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nТы нанёс {0} урона!\nСейчас у него {1} HP!\n".format(damage,currHP),
     bot.edit_text(chat_id=chat_id, msg_id=msg_id, 
         text=text,
         inline_keyboard_markup=json.dumps(
@@ -63,6 +77,11 @@ def message_cb(bot, event):
         explorer.create_monster({"hp":50000000, "endbattle": int(time.time())+12*60*60})
         text = "На карте Лимпопо появился новый вирус! \nУ него зафиксировано {0} HP. Поспеши уничтожить его! \n\n >> /time_to_kill <<".format(explorer.attack_monster(damage=0, chat_id=chat_id))
         send_alerts(users, text)
+    elif event.text == "/stats":
+        info = explorer.get_lvl(chat_id = chat_id)
+        type_chat = "групповой" if chat_id.find("@") > 0 else "личный"
+        exp = get_exp(info['total_dmg'])
+        bot.send_text(chat_id=chat_id, text="ИНФОРМАЦИЯ\nСтатус чата: {0}\nУровень чата: {1}\n[{5}] {2}/{3} EXP\nОбщий нанесёный урон вирусу: {4}".format(type_chat, exp['lvl'],exp['last'],exp['aim'] ,info['total_dmg'], exp['loader']))
     elif event.text == "/time_to_kill":
         kill_id = explorer.get_kill_id(chat_id=chat_id)
         if(kill_id[0]):
@@ -79,7 +98,8 @@ def query_cb(bot,event):
     kill_msg = explorer.get_kill_id(chat_id=chat_id)
     if(time.time() - kill_msg[1] < 46*60*60):
         msg_id = kill_msg[0]
-        updateMessage(bot,chat_id,msg_id, event.data['callbackData'])
+        name = event.data['from']['firstName'] + ' ' + event.data['from']['lastName']
+        updateMessage(bot,chat_id,msg_id, event.data['callbackData'], name)
         bot.answer_callback_query(query_id=event.data['queryId'],text=answer[event.data['callbackData']])
     else:
         bot.delete_messages(chat_id=chat_id, msg_id=kill_msg[0])

@@ -34,6 +34,7 @@ class DBExplorer:
         monster = Monster.get(Monster.hp != None)
         chat = Chats.get(Chats.chat_id == chat_id)
         monster.hp-=damage
+        chat.total_dmg += damage
         rem_hp = monster.hp
         monster.save()
         chat.save()
