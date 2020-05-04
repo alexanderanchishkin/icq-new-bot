@@ -78,10 +78,10 @@ def message_cb(bot, event):
         text = "На карте Лимпопо появился новый вирус! \nУ него зафиксировано {0} HP. Поспеши уничтожить его! \n\n >> /time_to_kill <<".format(explorer.attack_monster(damage=0, chat_id=chat_id))
         send_alerts(users, text)
     elif event.text == "/stats":
-        info = explorer.get_lvl(chat_id = chat_id)
+        info = explorer.get_dmg(chat_id = chat_id)
         type_chat = "групповой" if chat_id.find("@") > 0 else "личный"
-        exp = get_exp(info['total_dmg'])
-        bot.send_text(chat_id=chat_id, text="ИНФОРМАЦИЯ\nСтатус чата: {0}\nУровень чата: {1}\n[{5}] {2}/{3} EXP\nОбщий нанесёный урон вирусу: {4}".format(type_chat, exp['lvl'],exp['last'],exp['aim'] ,info['total_dmg'], exp['loader']))
+        exp = get_exp(info)
+        bot.send_text(chat_id=chat_id, text="ИНФОРМАЦИЯ\nСтатус чата: {0}\nУровень чата: {1}\n[{5}] {2}/{3} EXP\nОбщий нанесёный урон вирусу: {4}".format(type_chat, exp['lvl'],exp['last'],exp['aim'] ,info, exp['loader']))
     elif event.text == "/time_to_kill":
         kill_id = explorer.get_kill_id(chat_id=chat_id)
         if(kill_id[0]):

@@ -53,6 +53,6 @@ class DBExplorer:
         chat.time_kill_message = time_kill
         chat.save()
 
-    def get_lvl(self, chat_id):
+    def get_dmg(self, chat_id):
         chat = Chats.get(Chats.chat_id==chat_id)
-        return {'lvl': chat.lvl, 'total_dmg': chat.total_dmg}
+        return chat.total_dmg

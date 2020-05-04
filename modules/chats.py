@@ -11,7 +11,7 @@ class Chats(BaseModel):
     chat_id = CharField(max_length=250, default=lambda: '', unique=True)
     kill_message_id = CharField(max_length=250, default=lambda: '')
     time_kill_message = IntegerField(default=0)
-    lvl = IntegerField(default=1)
+    stat_message_id = CharField(max_length=250, default=lambda: '')
     total_dmg = IntegerField(default=100)
 
     class Meta:
