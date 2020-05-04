@@ -2,7 +2,7 @@ import os
 import time
 import numpy as np
 
-from random import randrange, choice
+import random
 
 from utilities import idle
 from utilities.db_explorer import *
@@ -74,7 +74,7 @@ def updateMessage(bot, chat_id, msg_id, callbackData,name):
 def message_cb(bot, event):
     chat_id = event.data['chat']['chatId']
     if event.text=="/random":
-        bot.send_text(chat_id=chat_id, text=str(randrange(101)))
+        bot.send_text(chat_id=chat_id, text=str(random.randrange(101)))
     elif event.text=="/start":
         bot.send_text(chat_id=chat_id, text="Приветствую тебя! Пополняй ряди ")
         explorer.write_chats({'chat_id': chat_id})
@@ -143,16 +143,16 @@ def get_rand_actions():
     first_action = []
     second_action = []
     while first_index == 1 and second_index == 1:
-        first_index = randrange(2)
-        second_index = randrange(2)
+        first_index = random.randrange(2)
+        second_index = random.randrange(2)
     if first_index == second_index:
-        first_action = choice(actions[first_index])
+        first_action = random.choice(actions[first_index])
         second_action = first_action.copy()
         while first_action[0]['text'] == second_action[0]['text']:
-            second_action = choice(actions[second_index])
+            second_action = random.choice(actions[second_index])
     else:
-        first_action = choice(actions[first_index])
-        second_action = choice(actions[second_index])
+        first_action = random.choice(actions[first_index])
+        second_action = random.choice(actions[second_index])
     return [first_action, second_action]
 
 
