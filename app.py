@@ -66,9 +66,9 @@ def updateMessage(bot, chat_id, msg_id, callbackData,name):
         currHP = explorer.attack_monster(damage=damage, chat_id=chat_id)
         if(chat_id.find("@") != -1):
             text = "Наш вирус обосновался в городе Усть-Камень-Кирка!\n\n{0} нанёс {1} урона!\nСейчас у него {2} HP!\n".format(name,damage,currHP)
-        else:    
+        else:
             text= "Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nТы нанёс {0} урона!\nСейчас у него {1} HP!\n".format(damage,currHP),
-    bot.edit_text(chat_id=chat_id, msg_id=msg_id, 
+    bot.edit_text(chat_id=chat_id, msg_id=msg_id,
         text=text,
         inline_keyboard_markup=json.dumps(get_rand_actions()))
 def message_cb(bot, event):
@@ -76,7 +76,7 @@ def message_cb(bot, event):
     if event.text=="/random":
         bot.send_text(chat_id=chat_id, text=str(randrange(101)))
     elif event.text=="/start":
-        bot.send_text(chat_id=chat_id, text="Будьте готовы сражаться! Вирус на подходе!")
+        bot.send_text(chat_id=chat_id, text="Приветствую тебя! Пополняй ряди ")
         explorer.write_chats({'chat_id': chat_id})
     elif event.text == "/create_COVID":
         users = explorer.get_chats_ids()
@@ -84,6 +84,10 @@ def message_cb(bot, event):
         text = "На карте Лимпопо появился новый вирус! \nУ него зафиксировано {0} HP. Поспеши уничтожить его! \n\n >> /time_to_kill <<".format(explorer.attack_monster(damage=0, chat_id=chat_id))
         send_alerts(users, text)
     elif event.text == "/stats":
+        stat_id = explorer.get_kill_id(chat_id=chat_id)
+        print(stat_id)
+        if(stat_id[0]):
+            bot.delete_messages(chat_id=chat_id, msg_id=stat_id[0])
         info = explorer.get_dmg(chat_id = chat_id)
         type_chat = "групповой" if chat_id.find("@") > 0 else "личный"
         exp = get_exp(info)
@@ -126,11 +130,8 @@ def query_cb(bot,event):
             msg_id = stat_msg[0]
             updateMessages(bot, chat_id, msg_id, text)
         else:
-            bot.delete_messages(chat_id=chat_id, msg_id=kill_msg[0])
-            bot.send_text(chat_id=event.from_chat,
-                      text=text,
-                      inline_keyboard_markup=json.dumps(
-                         [actions[randrange(7)], actions[randrange(7)]]))
+            bot.delete_messages(chat_id=chat_id, msg_id=msg_id)
+            bot.send_text(chat_id=event.from_chat,text=text)
     else:
         bot.delete_messages(chat_id=chat_id, msg_id=kill_msg[0])
         bot.send_text(chat_id=event.from_chat,
