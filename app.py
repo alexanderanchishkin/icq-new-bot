@@ -168,7 +168,7 @@ def get_rand_actions_legacy():
 def get_rand_actions():
     first_action = random.choice(actions[0])
     second_action = random.choice(actions[1])
-    return list(itertools.permutations([first_action, second_action]))
+    return random.choice(list(itertools.permutations([first_action, second_action])))
 
 
 bot.dispatcher.add_handler(MessageHandler(callback=message_cb))
