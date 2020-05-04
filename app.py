@@ -28,15 +28,15 @@ explorer = DBExplorer()
 commands = ["/random", "/start", "/advice", "/get_top_advices", "get_next_advice"]
 
 good_actions = [
-    [{"text": "Произвести дезинфекцию", "callbackData": "desinfect"}],
-    [{"text": "Проветрить комнату", "callbackData": "room"}],
-    [{"text": "Выпить чай с лимоном", "callbackData": "lemon"}],
-    [{"text": "Отсидеться на дома", "callbackData": "home"}],
-    [{"text": "Провести влажную уборку", "callbackData": "cleaning"}],
+    [{"text": "❗ Произвести дезинфекцию ❗", "callbackData": "desinfect"}],
+    [{"text": "🛏️ Проветрить комнату 🛏️", "callbackData": "room"}],
+    [{"text": "☕ Выпить чай с лимоном 🍋", "callbackData": "lemon"}],
+    [{"text": "🏠 Отсидеться дома 🏠", "callbackData": "home"}],
+    [{"text": "🧹 Провести влажную уборку 🧹", "callbackData": "cleaning"}],
 ]
 bad_actions = [
-    [{"text": "Прочистить трубу", "callbackData": "truba"}],
-    [{"text": "Сделать чесночный киндер", "callbackData": "onion"}],
+    [{"text": "❗ Прочистить трубу ❗", "callbackData": "truba"}],
+    [{"text": "❗ Сделать чесночный киндер ❗", "callbackData": "onion"}],
 ]
 actions = [good_actions, bad_actions]
 
