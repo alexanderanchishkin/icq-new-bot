@@ -62,3 +62,7 @@ class DBExplorer:
         user.kill_message_id = kill_id
         user.time_kill_message = time_kill
         user.save()
+
+    def get_lvl(self, user_id):
+        user = User.get(User.user_id==user_id)
+        return {'lvl': user.lvl, 'total_dmg': user.total_dmg}
