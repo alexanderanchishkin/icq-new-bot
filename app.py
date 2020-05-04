@@ -12,7 +12,6 @@ from bot.handler import MessageHandler, BotButtonCommandHandler
 
 import json
 
-random.seed(time.clock())
 
 # 001.3146970085.4148216257:752501352 main token
 # (set BOT_TOKEN=001.3146970085.4148216257:752501352) && python app.py
@@ -84,19 +83,6 @@ def sendKillStatus(bot, chat_id):
     json_response = response.json()
     explorer.set_kill_id(chat_id= chat_id, kill_id=json_response['msgId'])
 
-def updateMessage(bot, chat_id, msg_id, callbackData,name):
-    if callbackData in ["onion", "truba"]:
-        text = "Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nЭто действие не поможет против вируса!"
-    else:
-        damage = int(np.random.randn()*20 + 80)
-        currHP = explorer.attack_monster(damage=damage, chat_id=chat_id)
-        if(chat_id.find("@") != -1):
-            text = "Наш вирус обосновался в городе Усть-Камень-Кирка!\n\n{0} нанёс {1} урона!\nСейчас у него {2} HP!\n".format(name,damage,currHP)
-        else:
-            text= "Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nТы нанёс {0} урона!\nСейчас у него {1} HP!\n".format(damage,currHP),
-    bot.edit_text(chat_id=chat_id, msg_id=msg_id,
-        text=text,
-        inline_keyboard_markup=json.dumps(get_rand_actions()))
 def message_cb(bot, event):
     chat_id = event.data['chat']['chatId']
     if event.text=="/random":
