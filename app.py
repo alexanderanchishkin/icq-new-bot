@@ -12,7 +12,6 @@ from bot.handler import MessageHandler, BotButtonCommandHandler
 
 import json
 
-
 # 001.3146970085.4148216257:752501352 main token
 # (set BOT_TOKEN=001.3146970085.4148216257:752501352) && python app.py
 # command for run:
@@ -173,7 +172,7 @@ def get_rand_actions():
     print(first_action, second_action)
     print(res)
     print('end random')
-    return res
+    return list(res)
 
 
 bot.dispatcher.add_handler(MessageHandler(callback=message_cb))
