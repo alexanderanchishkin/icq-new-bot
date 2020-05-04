@@ -13,7 +13,7 @@ class User(BaseModel):
     name = CharField(max_length=250, default='')
     user_id = CharField(max_length=250, default='', unique=True)
     kill_message_id = CharField(max_length=250, default='')
-    time_kill_message = DateTimeField(default=datetime.datetime.now())
+    time_kill_message = IntegerField()
     lvl = IntegerField(default=1)
     total_dmg = IntegerField(default=80)
 
