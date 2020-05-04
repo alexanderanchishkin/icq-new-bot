@@ -1,4 +1,5 @@
 from peewee import *
+import datetime
 
 class BaseModel(Model):
     class Meta:
@@ -12,6 +13,7 @@ class User(BaseModel):
     name = CharField(max_length=250, default='')
     user_id = CharField(max_length=250, default='', unique=True)
     kill_message_id = CharField(max_length=250, default='')
+    time_kill_message = DateTimeField(default=datetime.datetime.now())
 
     class Meta:
         db_table = "user"

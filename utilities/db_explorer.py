@@ -1,4 +1,6 @@
 from peewee import *
+import datetime
+
 from modules.clicker import Clicker
 from modules.answer import Answer
 from modules.useranswer import UserAnswer
@@ -53,9 +55,10 @@ class DBExplorer:
 
     def get_kill_id(self, user_id):
         user = User.get(User.user_id==user_id)
-        return user.kill_message_id
+        return user.kill_message_id, user.time_kill_message
 
-    def set_kill_id(self, user_id, kill_id):
+    def set_kill_id(self, user_id, kill_id, time_kill=datetime.datetime.now()):
         user = User.get(User.user_id==user_id)
         user.kill_message_id = kill_id
+        user.time_kill_message = time_kill
         user.save()

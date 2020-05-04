@@ -69,7 +69,7 @@ def message_cb(bot, event):
 
 def query_cb(bot,event):
     answer = {'desinfect': "Ты продезинфицировал"}
-    msg_id = explorer.get_kill_id(user_id= event.data['from']['userId'])
+    msg_id = explorer.get_kill_id(user_id= event.data['from']['userId'])[0]
     updateMessage(bot,event.data['message']['chat']['chatId'],msg_id )
     bot.answer_callback_query(query_id=event.data['queryId'],text=answer[event.data['callbackData']])
 
