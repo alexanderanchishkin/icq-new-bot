@@ -14,6 +14,8 @@ class User(BaseModel):
     user_id = CharField(max_length=250, default='', unique=True)
     kill_message_id = CharField(max_length=250, default='')
     time_kill_message = DateTimeField(default=datetime.datetime.now())
+    lvl = IntegerField(default=1)
+    total_dmg = IntegerField(default=80)
 
     class Meta:
         db_table = "user"
