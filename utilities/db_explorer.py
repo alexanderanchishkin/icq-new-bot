@@ -18,7 +18,6 @@ class DBExplorer:
         self.db.connect()
 
     def write_chats(self, args):
-        print(args)
         Chats.insert(**args).on_conflict_ignore().execute()
 
     def get_chats_ids(self):
@@ -47,6 +46,10 @@ class DBExplorer:
     def get_kill_id(self, chat_id):
         chat = Chats.get(Chats.chat_id==chat_id)
         return chat.kill_message_id, chat.time_kill_message
+
+    def get_stats_id(self, chat_id):
+        chat = Chats.get(Chats.chat_id==chat_id)
+        return chat.stat_message_id, chat.time_stat_message
 
     def set_kill_id(self, chat_id, kill_id, time_kill=time.time()):
         chat = Chats.get(Chats.chat_id==chat_id)

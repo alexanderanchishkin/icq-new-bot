@@ -13,7 +13,7 @@ class Chats(BaseModel):
     time_kill_message = IntegerField(default=0)
     stat_message_id = CharField(max_length=250, default=lambda: '')
     time_stat_message = IntegerField(default=0)
-    total_dmg = IntegerField(default=100)
+    total_dmg = IntegerField(default=0)
 
     class Meta:
         db_table = "chats"
