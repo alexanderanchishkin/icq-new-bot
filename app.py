@@ -71,7 +71,9 @@ def message_cb(bot, event):
         bot.send_text(chat_id=chat_id, text=str(randrange(101)))
     elif event.text=="/start":
         bot.send_text(chat_id=chat_id, text="Будьте готовы сражаться! Вирус на подходе!")
-        explorer.write_chats({'chat_id': event.data['chat']['chatId']})
+        print("1")
+        explorer.write_chats({'chat_id': chat_id})
+        print("2")
     elif event.text == "/create_COVID":
         users = explorer.get_chats_ids()
         explorer.create_monster({"hp":50000000, "endbattle": int(time.time())+12*60*60})
@@ -81,7 +83,9 @@ def message_cb(bot, event):
         info = explorer.get_dmg(chat_id = chat_id)
         type_chat = "групповой" if chat_id.find("@") > 0 else "личный"
         exp = get_exp(info)
-        bot.send_text(chat_id=chat_id, text="ИНФОРМАЦИЯ\nСтатус чата: {0}\nУровень чата: {1}\n[{5}] {2}/{3} EXP\nОбщий нанесёный урон вирусу: {4}".format(type_chat, exp['lvl'],exp['last'],exp['aim'] ,info, exp['loader']))
+        response = bot.send_text(chat_id=chat_id, text="ИНФОРМАЦИЯ\nСтатус чата: {0}\nУровень чата: {1}\n[{5}] {2}/{3} EXP\nОбщий нанесёный урон вирусу: {4}".format(type_chat, exp['lvl'],exp['last'],exp['aim'] ,info, exp['loader']))
+        json_response = response.json()
+        # explorer.set_stats_id(chat_id=chat_id, stats_id=json_response["msgId"])
     elif event.text == "/time_to_kill":
         kill_id = explorer.get_kill_id(chat_id=chat_id)
         if(kill_id[0]):
