@@ -9,9 +9,9 @@ class BaseModel(Model):
 
 class User(BaseModel):
     id = PrimaryKeyField()
-    username= CharField(max_length=250, default=lambda: '', unique=True)
-    name = CharField(max_length=250, default=lambda: '')
-    user_id = CharField(max_length=250, default=lambda: '', unique=True)
+    # username= CharField(max_length=250, default=lambda: '', unique=True)
+    # name = CharField(max_length=250, default=lambda: '')
+    chat_id = CharField(max_length=250, default=lambda: '', unique=True)
     kill_message_id = CharField(max_length=250, default=lambda: '')
     time_kill_message = IntegerField(default=0)
     lvl = IntegerField(default=1)

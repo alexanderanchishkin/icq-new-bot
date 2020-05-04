@@ -1,3 +1,6 @@
+#Удалить
+#
+#
 from peewee import *
 import datetime
 from modules.answer import Answer
