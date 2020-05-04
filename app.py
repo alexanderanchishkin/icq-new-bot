@@ -24,7 +24,7 @@ if TOKEN is None:
 
 bot = Bot(token=TOKEN)
 explorer = DBExplorer()
-is_started = False
+
 commands = ["/random", "/start", "/advice", "/get_top_advices", "get_next_advice"]
 
 good_actions = [
@@ -54,6 +54,10 @@ def get_exp(total):
     count = int((total/aim)*10)
     loader = "🌚"*count+"🌝"*(10-count)
     return {"last": total, "aim": aim, "lvl": lvl, "loader":loader}
+def updateMessages(bot, chat_id, msg_id, text, markup=None):
+    response = bot.edit_text(chat_id=chat_id, msg_id=msg_id,
+        text=text,
+        inline_keyboard_markup=markup)
 def updateMessage(bot, chat_id, msg_id, callbackData,name):
     if callbackData in ["onion", "truba"]:
         text = "Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nЭто действие не поможет против вируса!"
@@ -73,7 +77,7 @@ def message_cb(bot, event):
         bot.send_text(chat_id=chat_id, text=str(randrange(101)))
     elif event.text=="/start":
         bot.send_text(chat_id=chat_id, text="Будьте готовы сражаться! Вирус на подходе!")
-        explorer.write_chats({'chat_id': event.data['chat']['chatId']})
+        explorer.write_chats({'chat_id': chat_id})
     elif event.text == "/create_COVID":
         users = explorer.get_chats_ids()
         explorer.create_monster({"hp":50000000, "endbattle": int(time.time())+12*60*60})
@@ -83,7 +87,9 @@ def message_cb(bot, event):
         info = explorer.get_dmg(chat_id = chat_id)
         type_chat = "групповой" if chat_id.find("@") > 0 else "личный"
         exp = get_exp(info)
-        bot.send_text(chat_id=chat_id, text="ИНФОРМАЦИЯ\nСтатус чата: {0}\nУровень чата: {1}\n[{5}] {2}/{3} EXP\nОбщий нанесёный урон вирусу: {4}".format(type_chat, exp['lvl'],exp['last'],exp['aim'] ,info, exp['loader']))
+        response = bot.send_text(chat_id=chat_id, text="ИНФОРМАЦИЯ\nСтатус чата: {0}\nУровень чата: {1}\n[{5}] {2}/{3} EXP\nОбщий нанесёный урон вирусу: {4}".format(type_chat, exp['lvl'],exp['last'],exp['aim'] ,info, exp['loader']))
+        json_response = response.json()
+        explorer.set_stats_id(chat_id=chat_id, stats_id=json_response["msgId"])
     elif event.text == "/time_to_kill":
         kill_id = explorer.get_kill_id(chat_id=chat_id)
         if(kill_id[0]):
@@ -96,13 +102,35 @@ def message_cb(bot, event):
 
 def query_cb(bot,event):
     chat_id = event.data['message']['chat']['chatId']
-    answer = {'desinfect': "Ты продезинфицировал"}
+    answer = {
+        'desinfect': "Ты продезинфицировал",
+        'room': "Ты проветрил комнату",
+        'lemon': "Ты выпил чай с лимоном",
+        'home': "Ты остался дома",
+        'cleaning': "Ты провёл влажную уборку",
+        'truba': "Ты прочистил трубу😳",
+        'onion': "Ты сделал чесночный киндер😳"
+        }
     kill_msg = explorer.get_kill_id(chat_id=chat_id)
     if(time.time() - kill_msg[1] < 46*60*60):
         msg_id = kill_msg[0]
         name = event.data['from']['firstName'] + ' ' + event.data['from']['lastName']
         updateMessage(bot,chat_id,msg_id, event.data['callbackData'], name)
         bot.answer_callback_query(query_id=event.data['queryId'],text=answer[event.data['callbackData']])
+        stat_msg = explorer.get_stats_id(chat_id)
+        info = explorer.get_dmg(chat_id = chat_id)
+        type_chat = "групповой" if chat_id.find("@") > 0 else "личный"
+        exp = get_exp(info)
+        text = "ИНФОРМАЦИЯ\nСтатус чата: {0}\nУровень чата: {1}\n[{5}] {2}/{3} EXP\nОбщий нанесёный урон вирусу: {4}".format(type_chat, exp['lvl'],exp['last'],exp['aim'] ,info, exp['loader'])
+        if(time.time() - stat_msg[1] < 46*60*60):
+            msg_id = stat_msg[0]
+            updateMessages(bot, chat_id, msg_id, text)
+        else:
+            bot.delete_messages(chat_id=chat_id, msg_id=kill_msg[0])
+            bot.send_text(chat_id=event.from_chat,
+                      text=text,
+                      inline_keyboard_markup=json.dumps(
+                         [actions[randrange(7)], actions[randrange(7)]]))
     else:
         bot.delete_messages(chat_id=chat_id, msg_id=kill_msg[0])
         bot.send_text(chat_id=event.from_chat,
@@ -126,7 +154,6 @@ def get_rand_actions():
         second_action = choice(actions[second_index])
     return [first_action, second_action]
 
-print(get_rand_actions())
 
 bot.dispatcher.add_handler(MessageHandler(callback=message_cb))
 bot.dispatcher.add_handler(BotButtonCommandHandler(callback=query_cb))
