@@ -52,27 +52,29 @@ def updateMessage(bot, chat_id, msg_id, callbackData):
         inline_keyboard_markup=json.dumps(
                           [actions[randrange(7)], actions[randrange(7)]]))
 def message_cb(bot, event):
-    if event.text=="/random":
-        bot.send_text(chat_id=event.from_chat, text=str(randrange(101)))
-    elif event.text=="/start":
-        bot.send_text(chat_id=event.from_chat, text="Будьте готовы сражаться! Вирус на подходе!")
-        explorer.write_chats({'chat_id': event.data['chat']['chatId']})
-    elif event.text == "/create_COVID":
-        users = explorer.get_chats_ids()
-        explorer.create_monster({"hp":50000000, "endbattle": int(time.time())+12*60*60})
-        text = "На карте Лимпопо появился новый вирус! \nУ него зафиксировано {0} HP. Поспеши уничтожить его! \n\n >> /time_to_kill <<".format(explorer.attack_monster(damage=0, chat_id=event.from_chat))
-        send_alerts(users, text)
-    elif event.text == "/time_to_kill":
-        kill_id = explorer.get_kill_id(chat_id=event.from_chat)
-        if(kill_id[0]):
-            bot.delete_messages(chat_id=event.from_chat, msg_id=kill_id[0])
-        response = bot.send_text(chat_id=event.from_chat,
-                      text="Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nСейчас у него {0} HP!\n".format(explorer.attack_monster(damage=0, chat_id=event.from_chat)),
-                      inline_keyboard_markup=json.dumps([actions[randrange(7)], actions[randrange(7)]]))
-        json_response = response.json()
-        explorer.set_kill_id(chat_id= event.from_chat, kill_id=json_response['msgId'])
+    chat_id = event.data['chat']['chatId']
+    if(chat_id.find("@")  == -1):
+        bot.send_text(chat_id=chat_id, text="Бот создан для групповых чатов")
     else:
-        bot.send_text(chat_id=event.from_chat, text=event.text)
+        if event.text=="/random":
+            bot.send_text(chat_id=chat_id, text=str(randrange(101)))
+        elif event.text=="/start":
+            bot.send_text(chat_id=chat_id, text="Будьте готовы сражаться! Вирус на подходе!")
+            explorer.write_chats({'chat_id': event.data['chat']['chatId']})
+        elif event.text == "/create_COVID":
+            users = explorer.get_chats_ids()
+            explorer.create_monster({"hp":50000000, "endbattle": int(time.time())+12*60*60})
+            text = "На карте Лимпопо появился новый вирус! \nУ него зафиксировано {0} HP. Поспеши уничтожить его! \n\n >> /time_to_kill <<".format(explorer.attack_monster(damage=0, chat_id=chat_id))
+            send_alerts(users, text)
+        elif event.text == "/time_to_kill":
+            kill_id = explorer.get_kill_id(chat_id=chat_id)
+            if(kill_id[0]):
+                bot.delete_messages(chat_id=chat_id, msg_id=kill_id[0])
+            response = bot.send_text(chat_id=chat_id,
+                        text="Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nСейчас у него {0} HP!\n".format(explorer.attack_monster(damage=0, chat_id=chat_id)),
+                        inline_keyboard_markup=json.dumps([actions[randrange(7)], actions[randrange(7)]]))
+            json_response = response.json()
+            explorer.set_kill_id(chat_id= chat_id, kill_id=json_response['msgId'])
 
 def query_cb(bot,event):
     answer = {'desinfect': "Ты продезинфицировал"}
