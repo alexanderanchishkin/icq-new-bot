@@ -46,7 +46,7 @@ def message_cb(bot, event):
             explorer.write_user({'username':event.data['from'].get('nick', ''),
                                 'name': event.data['from'].get('firstName', '')+' '+event.data['from'].get('lastName', ''),
                                 'user_id': event.data['from']['userId'], 'kill_message_id':'',
-                                'lvl':1, 'total_dmg':100)
+                                'lvl':1, 'total_dmg':100})
         except:
             print('ОШИБКА!')
             import traceback
@@ -55,7 +55,7 @@ def message_cb(bot, event):
     elif event.text == "/create_COVID":
         users = explorer.get_user_ids()
         explorer.create_monster({"hp":50000000, "endbattle": int(time.time())+12*60*60})
-        text = "На карте Черноруссии появился новый вирус! \nУ него зафиксировано {0} HP. Поспеши уничтожить его! \n\n >> /time_to_kill <<".format(explorer.attack_monster(damage=0))
+        text = "На карте Черноруссии появился новый вирус! \nУ него зафиксировано {0} HP. Поспеши уничтожить его! \n\n >> /time_to_kill <<".format(explorer.attack_monster(damage=0, user_id=event.data['message']['chat']['chatId']))
         send_alerts(users, text)
     elif event.text == "/time_to_kill":
         response = bot.send_text(chat_id=event.from_chat,
