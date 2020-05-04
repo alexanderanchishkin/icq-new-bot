@@ -4,3 +4,4 @@ flask-heroku
 mailru-im-bot
 peewee
 psycopg2-binary
+numpy

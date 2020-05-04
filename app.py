@@ -1,5 +1,6 @@
 import os
 import time
+import numpy as np
 
 from random import randrange
 
@@ -43,7 +44,7 @@ def updateMessage(bot, chat_id, msg_id, callbackData):
     if callbackData in ["onion", "truba"]:
         text = "Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nЭто действие не поможет против вируса!"
     else:
-        damage = randrange(101)
+        damage = int(np.random.randn()*20 + 80)
         currHP = explorer.attack_monster(damage=damage, user_id=chat_id)
         text="Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nТы нанёс {0} урона!\nСейчас у него {1} HP!\n".format(damage,currHP),
     bot.edit_text(chat_id=chat_id, msg_id=msg_id, 
