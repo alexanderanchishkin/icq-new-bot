@@ -17,7 +17,7 @@ import json
 # command for run:
 # (set BOT_TOKEN=<your_bot_token>) && python app.py
 
-TOKEN = os.getenv('BOT_TOKEN')
+TOKEN = os.getenv('BOT_TOKEN')  # <-- ENTER YOUR TOKEN HERE INSTEAD os.getenv...
 if TOKEN is None:
     print('Set ENV variable BOT_TOKEN')
     print('Use run command on Windows: (set BOT_TOKEN=<your_bot_token>) && python app.py')
@@ -81,12 +81,17 @@ def sendKillStatus(bot, chat_id):
     json_response = response.json()
     explorer.set_kill_id(chat_id= chat_id, kill_id=json_response['msgId'])
 
+def sendAdvice(bot, chat_id):
+    bot.send_text(chat_id=chat_id,
+                  text="05.05.2020\n\nСовет дня: ещё чаще мойте руки! После каждого выхода на улицу обрабатывайте телефон, ключи и банковскую карту!".format(
+                      explorer.attack_monster(damage=0, chat_id=chat_id)))
+
 def message_cb(bot, event):
     chat_id = event.data['chat']['chatId']
     if event.text=="/random":
         bot.send_text(chat_id=chat_id, text=str(random.randrange(101)))
     elif event.text=="/start":
-        bot.send_text(chat_id=chat_id, text="Здравия желаю! Нет времяни объяснять! Вступай в ряды борцов против вируса!")
+        bot.send_text(chat_id=chat_id, text="Здравия желаю! Нет времени объяснять! Вступай в ряды борцов против вируса!")
         explorer.write_chats({'chat_id': chat_id})
         sendStats(bot, chat_id)
         sendKillStatus(bot, chat_id)
@@ -99,6 +104,8 @@ def message_cb(bot, event):
         sendStats(bot, chat_id)
     elif event.text == "/time_to_kill":
         sendKillStatus(bot, chat_id)
+    elif event.text == '/advice':
+        sendAdvice(bot, chat_id)
 
 def query_cb(bot,event):
     chat_id = event.data['message']['chat']['chatId']
