@@ -100,7 +100,7 @@ def sendKillStatus(bot, chat_id):
 
 def sendAdvice(bot, chat_id):
     bot.send_text(chat_id=chat_id,
-                  text="05.05.2020\n\nСводка новостей с фронта сопротивления!\nКоманда чата PowerRangers нанесла 41590 HP за последние 6 часов!\nОстальной топ:\n2. Вася Петров - 28952 HP\n3. Go go go - 15982 HP\n4. VirusSwag - 9578 HP\n5. Yeah boy - 7214 HP\n\n Внимание всем бойцам!\nСегодняшний план действий: ещё чаще мойте руки! После каждого выхода на улицу обрабатывайте телефон, ключи и банковскую карту!".format(
+                  text="05.05.2020\n\nСводка новостей с фронта сопротивления!\nКоманда чата PowerRangers нанесла 41590 HP за последние 6 часов!\nОстальной топ:\n2. Вася Петров - 28952 HP\n3. Go go go - 15982 HP\n4. VirusSwag - 9578 HP\n5. Yeah boy - 7214 HP\n\nВнимание всем бойцам!\nСегодняшний план действий: ещё чаще мойте руки! После каждого выхода на улицу обрабатывайте телефон, ключи и банковскую карту!".format(
                       explorer.attack_monster(damage=0, chat_id=chat_id)))
 
 def message_cb(bot, event):
@@ -156,8 +156,26 @@ def query_cb(bot,event):
         msg_id = kill_msg[0]
         name = event.data['from']['firstName'] + ' ' + event.data['from']['lastName']
         # updateMessage(bot,chat_id,msg_id, event.data['callbackData'], name)
+        # if event.data['callbackData'] in ["onion", "truba", "sc", "friends", "serial", "mask_down", "toilet_paper", "museum"]:
+        #     text = "Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nЭто действие не поможет против вируса!"
+        # else:
+        #     damage = int(np.random.randn()*20 + 80)
+        #     currHP = explorer.attack_monster(damage=damage, chat_id=chat_id)
+        #     if(chat_id.find("@") != -1):
+        #         text = "Наш вирус обосновался в городе Усть-Камень-Кирка!\n\n{0} нанёс {1} урона!\nСейчас у него {2} HP!\n".format(name,damage,currHP)
+        #     else:
+        #         text= "Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nТы нанёс {0} урона!\nСейчас у него {1} HP!\n".format(damage,currHP)
+
         if event.data['callbackData'] in ["onion", "truba", "sc", "friends", "serial", "mask_down", "toilet_paper", "museum"]:
+            damage = -int(np.random.randn() * 20 + 80)
             text = "Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nЭто действие не поможет против вируса!"
+            currHP = explorer.attack_monster(damage=damage, chat_id=chat_id)
+            if (chat_id.find("@") != -1):
+                text = "Наш вирус обосновался в городе Усть-Камень-Кирка!\n\n{0} помог вирусу на {1} HP!\nАккуратнее!!!\nСейчас у него {2} HP!\n".format(
+                    name, damage, currHP)
+            else:
+                text = "Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nТы помог вирусу на {0} HP!\nАккуратнее!!!\nСейчас у него {1} HP!\n".format(
+                    damage, currHP)
         else:
             damage = int(np.random.randn()*20 + 80)
             currHP = explorer.attack_monster(damage=damage, chat_id=chat_id)
@@ -165,6 +183,7 @@ def query_cb(bot,event):
                 text = "Наш вирус обосновался в городе Усть-Камень-Кирка!\n\n{0} нанёс {1} урона!\nСейчас у него {2} HP!\n".format(name,damage,currHP)
             else:
                 text= "Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nТы нанёс {0} урона!\nСейчас у него {1} HP!\n".format(damage,currHP)
+
         markup = json.dumps(get_rand_actions())
         updateMessages(bot, chat_id, msg_id, text, markup)
         # bot.answer_callback_query(query_id=event.data['queryId'],text=answer[event.data['callbackData']])
