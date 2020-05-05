@@ -172,10 +172,10 @@ def query_cb(bot,event):
             currHP = explorer.attack_monster(damage=damage, chat_id=chat_id)
             if (chat_id.find("@") != -1):
                 text = "Наш вирус обосновался в городе Усть-Камень-Кирка!\n\n{0} помог вирусу на {1} HP!\nАккуратнее!!!\nСейчас у него {2} HP!\n".format(
-                    name, damage, currHP)
+                    name, -damage, currHP)
             else:
                 text = "Наш вирус обосновался в городе Усть-Камень-Кирка!\n\nТы помог вирусу на {0} HP!\nАккуратнее!!!\nСейчас у него {1} HP!\n".format(
-                    damage, currHP)
+                    -damage, currHP)
         else:
             damage = int(np.random.randn()*20 + 80)
             currHP = explorer.attack_monster(damage=damage, chat_id=chat_id)
