@@ -100,7 +100,7 @@ def sendKillStatus(bot, chat_id):
 
 def sendAdvice(bot, chat_id):
     bot.send_text(chat_id=chat_id,
-                  text="05.05.2020\n\nСовет дня: ещё чаще мойте руки! После каждого выхода на улицу обрабатывайте телефон, ключи и банковскую карту!".format(
+                  text="05.05.2020\n\nСводка новостей с фронта сопротивления!\nКоманда чата PowerRangers нанесла 41590 HP за последние 6 часов!\nОстальной топ:\n2. Вася Петров - 28952 HP\n3. Go go go - 15982 HP\n4. VirusSwag - 9578 HP\n5. Yeah boy - 7214 HP\n\n Внимание всем бойцам!\nСегодняшний план действий: ещё чаще мойте руки! После каждого выхода на улицу обрабатывайте телефон, ключи и банковскую карту!".format(
                       explorer.attack_monster(damage=0, chat_id=chat_id)))
 
 def message_cb(bot, event):
